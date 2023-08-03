@@ -28,5 +28,5 @@ def close_socket_by_address(address):
     return False
 
 if __name__ == "__main__":
-    target_address = ("127.0.0.1", 12345)  # Replace this with the address you want to close
+    target_address = ("127.0.0.1", 65432)  # Replace this with the address you want to close
     close_socket_by_address(target_address)

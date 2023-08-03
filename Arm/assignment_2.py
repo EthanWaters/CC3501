@@ -2,28 +2,55 @@
 
 from pyniryo import *
 from pynput import keyboard
+import threading
+import socket
+from socket import SOCK_DGRAM, SO_REUSEADDR
+from Client import Client
+from Server import Server
 
 WIFI_IP_ADDRESS = "10.10.10.10"
 DIST_SMOOTHING = 0.1
+HOST = "127.0.0.1"
+PORT = 5432
+BUFF_SIZE=1024
 
 
-
+def listen_for_inputs(angle_inputs):
+    while True:
+        
+        # CODE FOR GETTING DATA FROM EMBEDDED SYSTEM
+        angles = get_angles_from_somewhere()
+        if angles is not None:
+            angle_inputs.append(angles)
+        
 
 def main():
-     # Connect to robot and calibrate
-    robot = NiryoRobot(WIFI_IP_ADDRESS)
-    robot.calibrate_auto()
-    robot.update_tool()
-    
-    
-    
-    robot.go_to_sleep()
-    robot.close_connection()
-
+    try:  # Connect to robot and calibrate
+        #robot = NiryoRobot(WIFI_IP_ADDRESS)
+        server = Server(HOST, PORT, BUFF_SIZE)
+        #robot.calibrate_auto()
+        #robot.update_tool()
+        count = 0
+        while count < 100:
+        
+            print(server.recieved_data)
+            
+            print(server)
+            server.stop_recieving()
+            count += 1
+        #angle_inputs = []
+        #while True:
+        #    angle_inputs = server.recieved_data
+        #    print(angle_inputs)
+        #    server.recieved_data = []
+        
+        #robot.go_to_sleep()
+        #robot.close_connection()
+    except:
+        server.s.close()
 
 
 if __name__ == '__main__':
-   
-   main()
-   
+    main()
+  
   
