@@ -22,6 +22,6 @@ while count < 20:
     client.send_message([0.07, -0.3, 0.0, 0.0, 0.0, 0.0])
     time.sleep(0.5)
     client.send_message([0.2, -0.4, 0.0, 0.0, 0.0, 0.0])
-    client.send_message("end")
+     
     count += 1
 client.send_message("end")

@@ -7,6 +7,7 @@ import socket
 from socket import SOCK_DGRAM, SO_REUSEADDR
 from Client import Client
 from Server import Server
+import time
 
 WIFI_IP_ADDRESS = "10.10.10.10"
 DIST_SMOOTHING = 0.1
@@ -32,12 +33,14 @@ def main():
         #robot.update_tool()
         count = 0
         while count < 100:
-        
-            print(server.recieved_data)
             
-            print(server)
-            server.stop_recieving()
+            #if server.recieved_data:
+            #print(server.recieved_data)
+            print(server.get_recieved_data())
             count += 1
+            time.sleep(0.5)
+        print(count)
+        server.stop_recieving()
         #angle_inputs = []
         #while True:
         #    angle_inputs = server.recieved_data
@@ -46,8 +49,9 @@ def main():
         
         #robot.go_to_sleep()
         #robot.close_connection()
-    except:
-        server.s.close()
+    except Exception as e:
+        print(e)
+        server.stop_recieving()
 
 
 if __name__ == '__main__':
