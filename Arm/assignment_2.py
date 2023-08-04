@@ -1,12 +1,13 @@
 """PI to ARM code. Ethan, Stuart & Lachlan"""
 
-from pyniryo import *
-from pynput import keyboard
+# from pyniryo import *
+# from pynput import keyboard
 import threading
 import socket
 from socket import SOCK_DGRAM, SO_REUSEADDR
 from Client import Client
 from Server import Server
+
 import time
 
 WIFI_IP_ADDRESS = "10.10.10.10"
@@ -28,30 +29,34 @@ def listen_for_inputs(angle_inputs):
 def main():
     try:  # Connect to robot and calibrate
         #robot = NiryoRobot(WIFI_IP_ADDRESS)
+        
         server = Server(HOST, PORT, BUFF_SIZE)
         #robot.calibrate_auto()
         #robot.update_tool()
         count = 0
-        while count < 100:
+        while count < 45:
             
-            #if server.recieved_data:
-            #print(server.recieved_data)
-            print(server.get_recieved_data())
+            test2 = server.test
+            if not test2.empty():
+                print(test2.get())
+
+            print(server.received_data)
+            print("=======")
             count += 1
-            time.sleep(0.5)
+            time.sleep(1)
         print(count)
-        server.stop_recieving()
+        server.stop_receiving()
         #angle_inputs = []
         #while True:
-        #    angle_inputs = server.recieved_data
+        #    angle_inputs = server.received_data
         #    print(angle_inputs)
-        #    server.recieved_data = []
+        #    server.received_data = []
         
         #robot.go_to_sleep()
         #robot.close_connection()
     except Exception as e:
         print(e)
-        server.stop_recieving()
+        server.stop_receiving()
 
 
 if __name__ == '__main__':
