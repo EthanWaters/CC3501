@@ -11,12 +11,11 @@ class Server:
         self.HOST = HOST
         self.PORT = PORT
         self.receiving_data = False
-        # self.received_data = [] 
-        self.received_data = None
+        self.received_data = []
         self.test = queue.Queue()
 
         #self.MAX_CONNECTIONS = MAX_CONNECTIONS
-        self.BUFF_SIZE = BUFEF_SIZ
+        self.BUFF_SIZE = BUFF_SIZE
         self.s.bind((self.HOST, self.PORT))
         # self.s.listen(self.MAX_CONNECTIONS)
     
@@ -41,18 +40,20 @@ class Server:
     def stop_receiving(self):
         self.receiving_data = False
         self.s.close()
+        self.thread.join()
         print("Stopped reading data")
 
 
     def get_data(self):
-        self.received_data = []
         self.receiving_data = True
         while self.receiving_data:
             data = self.s.recv(self.BUFF_SIZE)
             data = data.decode()
             if data == "end":
                 self.stop_receiving()
-            self.test.put(data)
+            
+            if self.received_data == None:
+                print("MASSIVE")
             self.received_data = self.received_data.append(data) 
         
 
@@ -64,15 +65,7 @@ class Server:
         self.received_data = value
 
 
-    # def get_received_data(self):
-    #     # Retrieve data from the queue
-    #     data = []
-    #     while not self.received_data.empty():
-    #         print("UESSSS")
-    #         data.append(self.received_data.get())
-    #     print("====================")
-    #     print(data)
-    #     return data
-
        
-# server = Server()
+server = Server()
+print("PASt SERVER")
+print(server.received_data)
