@@ -16,12 +16,11 @@ class Client:
 client = Client()
 count = 0
 while count < 20:
-    time.sleep(0.5)
+    time.sleep(1)
     client.send_message([0.05, -0.1, 0.0, 0.0, 0.0, 0.0])
-    time.sleep(0.5)
+    time.sleep(1)
     client.send_message([0.07, -0.3, 0.0, 0.0, 0.0, 0.0])
-    time.sleep(0.5)
+    time.sleep(1)
     client.send_message([0.2, -0.4, 0.0, 0.0, 0.0, 0.0])
-     
     count += 1
 client.send_message("end")
