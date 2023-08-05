@@ -68,4 +68,4 @@ class Server:
        
 server = Server()
 print("PASt SERVER")
-print(server.received_data)
+# print(server.received_data)
