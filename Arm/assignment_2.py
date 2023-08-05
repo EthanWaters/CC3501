@@ -5,7 +5,7 @@ from pynput import keyboard
 import threading
 import socket
 from socket import SOCK_DGRAM, SO_REUSEADDR
-from Client import Client
+#from Client import Client
 #from Server import Server
 from typing import Any
 import queue
@@ -42,6 +42,43 @@ def server_init(received_data, event, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=10
     print("Shutting Server Down ... \n")
 
 
+def trajectory_motion(robot, data_available_event, received_data):
+    while True:
+        data_available_event.wait()
+        data_available_event.clear()
+        
+        positions = []
+        
+        time.sleep(2)
+        while not received_data.empty():
+            positions.append(received_data.get())
+        
+        
+        list_type = ["joint"] * len(positions)
+        positions = [eval(i) for i in positions]
+        
+        print(list_type)
+        print(positions)
+        
+        robot.execute_trajectory_from_poses_and_joints(positions, list_type, DIST_SMOOTHING)
+        
+
+def jog_motion(robot, data_available_event, received_data):
+    robot.set_jog_control(True)
+    while True:
+        data_available_event.wait()
+        data_available_event.clear()
+        
+        if received_data.empty:
+            time.sleep(0.2)
+            
+        move = received_data.get()
+        move = eval(move)
+        robot.jog_joints(move) 
+            
+
+
+
 def main():
     try:  # Connect to robot and calibrate
         
@@ -57,26 +94,10 @@ def main():
         
                                                    
         #server_init(received_data, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=1024)
-        while True:
-            data_available_event.wait()
-            data_available_event.clear()
-            
-            positions = []
-            
-            time.sleep(2)
-            while not received_data.empty():
-                positions.append(received_data.get())
-            
-            
-            list_type = ["joint"] * len(positions)
-            positions = [eval(i) for i in positions]
-            
-            print(list_type)
-            print(positions)
-            
-            robot.execute_trajectory_from_poses_and_joints(positions, list_type, DIST_SMOOTHING)
-            
-
+        
+        # different methodsof controling the robot
+        # trajectory_motion(data_available_event, received_data)
+        jog_motion(robot, data_available_event, received_data)
 
         robot.go_to_sleep()
         robot.close_connection()
