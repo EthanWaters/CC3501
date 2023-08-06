@@ -5,8 +5,6 @@ from pynput import keyboard
 import threading
 import socket
 from socket import SOCK_DGRAM, SO_REUSEADDR
-#from Client import Client
-#from Server import Server
 from typing import Any
 import queue
 import time
@@ -15,11 +13,12 @@ WIFI_IP_ADDRESS = "10.10.10.10"
 DIST_SMOOTHING = 0.05
 HOST = "127.0.0.1"
 PORT = 54321
-BUFF_SIZE=1024
+BUFF_SIZE=2048
+SPEED = 500
 
 
 
-def server_init(received_data, event, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=1024):
+def server_init(receive_data, receive_data_event, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=2048):
     s = socket.socket(type=SOCK_DGRAM)
     s.bind((HOST, PORT))
 
@@ -35,48 +34,58 @@ def server_init(received_data, event, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=10
         data = data.decode('utf-8')
         if data == "end":
             receiving_data = False
-            
-        received_data.put(data)
-        event.set()
+        receive_data.put(data)
+        receive_data_event.set()
+        
+        
+        
     s.close()
     print("Shutting Server Down ... \n")
 
 
-def trajectory_motion(robot, data_available_event, received_data):
+def trajectory_motion(robot, motion_data_event, motion_data):
     while True:
-        data_available_event.wait()
-        data_available_event.clear()
+        motion_data_event.wait()
+        motion_data_event.clear()
         
         positions = []
-        
         time.sleep(2)
-        while not received_data.empty():
-            positions.append(received_data.get())
+        while not motion_data.empty():
+            positions.append(motion_data.get())
         
         
         list_type = ["joint"] * len(positions)
-        positions = [eval(i) for i in positions]
-        
-        print(list_type)
-        print(positions)
-        
         robot.execute_trajectory_from_poses_and_joints(positions, list_type, DIST_SMOOTHING)
         
 
-def jog_motion(robot, data_available_event, received_data):
+def jog_motion(robot, receive_data_event, receive_data):
     robot.set_jog_control(True)
     while True:
-        data_available_event.wait()
-        data_available_event.clear()
-        
-        if received_data.empty:
-            time.sleep(0.2)
-            
-        move = received_data.get()
-        move = eval(move)
-        robot.jog_joints(move) 
-            
-
+        receive_data_event.wait()
+        receive_data_event.clear()
+        while not receive_data.empty():
+            data = receive_data.get()
+            data = eval(data)
+            if isinstance(data, list):
+                robot.jog_joints(data)
+            elif data == 1:
+                robot.close_gripper(SPEED)
+            elif data == 2:
+                robot.open_gripper(SPEED)
+    robot.set_jog_control(False)
+   
+   
+def command(robot, command_data_event, command_data):
+    while True:
+        command_data_event.wait()
+        command_data_event.clear()
+        while not command_data.empty():  
+            command = command_data.get()
+            if command == 1:
+                robot.close_gripper(SPEED)
+            elif command == 2:
+                robot.open_gripper(SPEED)
+    
 
 
 def main():
@@ -86,18 +95,21 @@ def main():
         robot.calibrate_auto()
         robot.update_tool()
         
-        received_data = queue.Queue()
-        data_available_event = threading.Event()
-
-        processing_thread = threading.Thread(target=server_init, args=(received_data, data_available_event, HOST, PORT, BUFF_SIZE))
-        processing_thread.start()
+        receive_data = queue.Queue()
+        receive_data_event = threading.Event()
         
-                                                   
-        #server_init(received_data, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=1024)
+        #command_data = queue.Queue()
+        #command_data_event = threading.Event()
+
+        server_thread = threading.Thread(target=server_init, args=(receive_data, receive_data_event, HOST, PORT, BUFF_SIZE))
+        server_thread.start()
+        
+        #command_thread = threading.Thread(target=command, args=(robot, command_data_event, command_data))
+        #command_thread.start()
         
         # different methodsof controling the robot
-        # trajectory_motion(data_available_event, received_data)
-        jog_motion(robot, data_available_event, received_data)
+        # trajectory_motion(motion_data_event, motion_data)
+        jog_motion(robot, receive_data_event, receive_data)
 
         robot.go_to_sleep()
         robot.close_connection()
