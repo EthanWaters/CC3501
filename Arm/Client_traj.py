@@ -1,6 +1,7 @@
 import socket
 from socket import SOCK_DGRAM, SO_REUSEADDR
 import threading
+import time
 
 class Client:
     
@@ -12,5 +13,14 @@ class Client:
     def send_message(self, message):
         self.s.sendto(str(message).encode(), (self.HOST, self.PORT))
 
-
-
+client = Client()
+count = 0
+while count < 20:
+    time.sleep(1)
+    client.send_message([0.05, -0.1, 0.0, 0.0, 0.0, 0.0])
+    time.sleep(1)
+    client.send_message([0.07, -0.3, 0.0, 0.0, 0.0, 0.0])
+    time.sleep(1)
+    client.send_message([0.2, -0.4, 0.0, 0.0, 0.0, 0.0])
+    count += 1
+client.send_message("end")
