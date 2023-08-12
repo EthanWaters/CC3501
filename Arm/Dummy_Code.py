@@ -59,7 +59,7 @@ if __name__ == '__main__':
     (PoseObject(x=0.174, y=-0.01, z=0.394, roll=2.35, pitch=1.45, yaw=2.23))
     robot.set_jog_control(True)
 
-    # Create key
+    # Create key    
     current_key = ''
     print("press CTRL or ESC  to finish the program")
 
