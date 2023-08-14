@@ -12,17 +12,12 @@ class Server:
         self.receiving_data = False
         self.received_data = []
         
-        #self.MAX_CONNECTIONS = MAX_CONNECTIONS
         self.BUFF_SIZE = BUFF_SIZE
         self.s.bind((self.HOST, self.PORT))
-        # self.s.listen(self.MAX_CONNECTIONS)
-    
+       
         print("Starting a server")
         print(str(self.HOST)+ ":" + str(self.PORT))
         
-        # self.thread = threading.Thread(target=self.get_data)
-        # self.thread.start()
-        # self.s.setblocking(0)
         print(self.received_data)
         self.start_receiving()
     
@@ -62,7 +57,11 @@ class Server:
     def set_received_data(self, value):
         self.received_data = value
 
-server = Server()
-#thread = threading.Thread(target=server.get_data())
-#thread.start()  
+    @property
+    def received_data(self):
+        return self._received_data
+
+    @received_data.setter
+    def received_data(self, received_data):
+        self._received_data = received_data
 

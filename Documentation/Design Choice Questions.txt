@@ -1,0 +1,2 @@
+I2C Vs SPI ? 
+RP2040  Vs ESP-32 ? 
