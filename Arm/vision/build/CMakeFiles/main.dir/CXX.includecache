@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/esl/Documents/CC3501/Arm/vision/SocketsDemo/src/main.cpp
+sys/types.h
+-
+sys/socket.h
+-
+netdb.h
+-
+string.h
+-
+errno.h
+-
+stdio.h
+-
+unistd.h
+-
+arpa/inet.h
+-
+netinet/in.h
+-
+netinet/udp.h
+-
+poll.h
+-
+iostream
+-
+unistd.h
+-
+

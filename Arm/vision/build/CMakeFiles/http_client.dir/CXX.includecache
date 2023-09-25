@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/esl/Documents/CC3501_labs/Lab5/SocketsDemo/src/http_client.cpp
+curl/curl.h
+-
+stdio.h
+-
+fcntl.h
+-
+

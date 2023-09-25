@@ -1,0 +1,3 @@
+/home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build/CMakeFiles/rebuild_cache.dir
+/home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build/CMakeFiles/edit_cache.dir
+/home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build/CMakeFiles/main.dir
