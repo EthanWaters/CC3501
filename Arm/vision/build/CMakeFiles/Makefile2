@@ -63,16 +63,16 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/esl/Documents/CC3501/Arm/vision/SocketsDemo
+CMAKE_SOURCE_DIR = /home/esl/Documents/CC3501/Arm/vision
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build
+CMAKE_BINARY_DIR = /home/esl/Documents/CC3501/Arm/vision/build
 
 #=============================================================================
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/main.dir/all
+all: CMakeFiles/vision.dir/all
 
 .PHONY : all
 
@@ -82,36 +82,36 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/main.dir/clean
+clean: CMakeFiles/vision.dir/clean
 
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/main.dir
+# Target rules for target CMakeFiles/vision.dir
 
 # All Build rule for target.
-CMakeFiles/main.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build/CMakeFiles --progress-num=1,2 "Built target main"
-.PHONY : CMakeFiles/main.dir/all
+CMakeFiles/vision.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles --progress-num=1,2 "Built target vision"
+.PHONY : CMakeFiles/vision.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/main.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/main.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build/CMakeFiles 0
-.PHONY : CMakeFiles/main.dir/rule
+CMakeFiles/vision.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/vision.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles 0
+.PHONY : CMakeFiles/vision.dir/rule
 
 # Convenience name for target.
-main: CMakeFiles/main.dir/rule
+vision: CMakeFiles/vision.dir/rule
 
-.PHONY : main
+.PHONY : vision
 
 # clean rule for target.
-CMakeFiles/main.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/clean
-.PHONY : CMakeFiles/main.dir/clean
+CMakeFiles/vision.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/clean
+.PHONY : CMakeFiles/vision.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

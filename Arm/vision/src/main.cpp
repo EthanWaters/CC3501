@@ -1,168 +1,164 @@
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <string.h>
-#include <errno.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/udp.h>
-#include <poll.h>
+#include "opencv2/opencv.hpp"
+#include <sys/time.h>
+#include "opencv2/imgproc.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/videoio.hpp"
 #include <iostream>
-#include <unistd.h>
+#include <iomanip>
 
-//call it like ./client host port msg
-void clearPreviousLine() {
-    // Move the cursor to the beginning of the line and clear it
-    std::cout << "\033[A\033[K";
-}
+using namespace std;
+using namespace cv;
+const String window_capture_name = "Camera";
+const String window_detection_name = "Camera_Threshold";
 
-int main(int argc, char *argv[])
-{
-    if (argc < 2) {
-        printf("argc less than 3");
-        return 1;
-    }
-	
-    /*
-    Use getaddrinfo to generate an address structure corresponding to the host
-    to connect to.
-    */
-    struct addrinfo hints;
-    struct addrinfo *localAddress;  // For local address (for receiving)
-    struct addrinfo *remoteAddress; // For remote address (for sending)
-
-    memset(&hints, 0, sizeof(struct addrinfo));
-    hints.ai_family = AF_INET;      // IPv4
-    hints.ai_socktype = SOCK_DGRAM; // UDP
-    hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST; // Interpret a NULL hostname as a wildcard (to accept data from anywhere)
-
-    // Resolve the local address and port
-    int s_local = getaddrinfo(nullptr, argv[2], &hints, &localAddress);
-    if (s_local != 0) {
-        fprintf(stderr, "Failed to resolve local address: %s\n", gai_strerror(s_local));
-        return 1;
-    }
-
-    // Resolve the remote address and port
-    int s_remote = getaddrinfo(argv[1], argv[2], &hints, &remoteAddress);
-    if (s_remote != 0) {
-        fprintf(stderr, "Failed to resolve remote address: %s\n", gai_strerror(s_remote));
-        freeaddrinfo(localAddress);
-        return 1;
-    }
-
-    // Open the socket for receiving (local address)
-    int socket_fd = socket(localAddress->ai_family, localAddress->ai_socktype, localAddress->ai_protocol);
-    if (socket_fd == -1) {
-        perror("Failed to create socket");
-        freeaddrinfo(localAddress);
-        freeaddrinfo(remoteAddress);
-        return 1;
-    }
-
-    // Bind the socket to the local address and port
-    if (bind(socket_fd, localAddress->ai_addr, localAddress->ai_addrlen) != 0) {
-        perror("Failed to bind");
-        close(socket_fd);
-        freeaddrinfo(localAddress);
-        freeaddrinfo(remoteAddress);
-        return 1;
-    }
-    
-    
-
-    // Allow multiple applications to use the same port (to run two versions of the app side by side for testing)
-    int optval = true;
-    if (0 != setsockopt(socket_fd, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval))) {
-        perror("Failed to set SO_REUSEPORT");
-        return 1;
-    }
-    if (0 != setsockopt(socket_fd, SOL_SOCKET,  SO_BROADCAST, &optval, sizeof(optval))) {
-        perror("Failed to set SO_BROADCAST");
-        return 1;
-    }
-
-   
-
-    // Prepare the pollfd array with the list of file handles to monitor
-    struct pollfd pfds [] = {
-        {
-            // monitor the socket
-            .fd = socket_fd,
-            .events = POLLIN,
-        },
-        {
-        // monitor stdin for user input
-        .fd = STDIN_FILENO,
-        .events = POLLIN,
-		}
-        // add here if there are other files/sockets to monitor
-    };
-
-    // Event loop
-    char buf [32+1+240+1];
-    char buffer_to_send [32+1+240+1];
-    char buf_input [240];
-    
-    // initialise buffer empty
-    memset(buffer_to_send, 0, sizeof(buffer_to_send));
-	memset(buf, 0, sizeof(buf));
-	memset(buf_input, 0, sizeof(buf_input));
-    for (;;) {
-        // Wait for events
-        poll(pfds, sizeof(pfds)/sizeof(struct pollfd), -1);
-
-        // Check if a packet arrived
-        if (pfds[0].revents) {
-            // Read the incoming packet
-            ssize_t bytes_read = read(socket_fd, buf, sizeof(buf) - 2); // with room for a trailing null
-            if (bytes_read < 0) {
-				perror("Failed to recieve.");
-				close(socket_fd);
-                freeaddrinfo(localAddress);
-                freeaddrinfo(remoteAddress);
-                return 0;
-            }
-            // Make the message null terminated
-            buf[bytes_read] = 0;
-            buf[bytes_read+1] = 0;
-            printf("%s\n", buf);
-            memset(buf, 0, sizeof(buf));
-        }
-        if (pfds[1].revents) {
-			// Send the message 
-			fgets(buf_input, sizeof(buf_input), stdin);
-			clearPreviousLine();
-			buf_input[strcspn(buf_input, "\n")] = 0; // Remove newline
-            if(buffer.find("\x03\x18") != std::string::npos){
-                std::cout << "Program Terminated" << std::endl;
-                close(socket_fd);
-                freeaddrinfo(localAddress);
-                freeaddrinfo(remoteAddress);
-            }
+cv::Point2f mc;
+int morph_elem = 0;
+int morph_size = 0;
+int morph_operator = 0;
+int thresh = 100;
+const int max_operator = 4;
+const int max_elem = 2;
+const int max_kernel_size = 21;
+const int max_thresh = 255;
+const int max_value_H = 360/2;
+const int max_value = 255;
+int low_H = 0, low_S = 0, low_V = 0;
+int high_H = max_value_H, high_S = max_value, high_V = max_value;
+Scalar color = Scalar( 256, 256, 256 );
+Scalar color2 = Scalar( 0, 256, 0 );
             
-			strcat(buffer_to_send, buf_input);
-			strcat(buffer_to_send, "\0");
-			s_remote = sendto(socket_fd, buffer_to_send, strlen(buffer_to_send), 0, remoteAddress->ai_addr, remoteAddress->ai_addrlen);
-			if (s_remote == -1) {
-				perror("Failed to send.");
-				close(socket_fd);
-                freeaddrinfo(localAddress);
-                freeaddrinfo(remoteAddress);
-				return 1;
-			}
-			memset(buffer_to_send, 0, sizeof(buffer_to_send));
-			memset(buf_input, 0, sizeof(buf_input));
-        }
-    }
-    
-    // Free the memory returned by getaddrinfo
-    freeaddrinfo(localAddress);
-    freeaddrinfo(remoteAddress);
-				
 
-    // Close the socket
-    close(socket_fd);
+static void on_low_H_thresh_trackbar(int, void *)
+{
+ low_H = min(high_H-1, low_H);
+ setTrackbarPos("Low H", window_detection_name, low_H);
 }
+static void on_high_H_thresh_trackbar(int, void *)
+{
+ high_H = max(high_H, low_H+1);
+ setTrackbarPos("High H", window_detection_name, high_H);
+}
+static void on_low_S_thresh_trackbar(int, void *)
+{
+ low_S = min(high_S-1, low_S);
+ setTrackbarPos("Low S", window_detection_name, low_S);
+}
+static void on_high_S_thresh_trackbar(int, void *)
+{
+ high_S = max(high_S, low_S+1);
+ setTrackbarPos("High S", window_detection_name, high_S);
+}
+static void on_low_V_thresh_trackbar(int, void *)
+{
+ low_V = min(high_V-1, low_V);
+ setTrackbarPos("Low V", window_detection_name, low_V);
+}
+static void on_high_V_thresh_trackbar(int, void *)
+{
+ high_V = max(high_V, low_V+1);
+ setTrackbarPos("High V", window_detection_name, high_V);
+}
+static void on_morph_size(int, void*)
+{
+  setTrackbarPos("Kernel size:\n 2n +1", window_capture_name, morph_size);
+}
+static void on_morph_operator(int, void*)
+{
+  setTrackbarPos("Operator:\n 0: Opening - 1: Closing \n 2: Gradient - 3: Top Hat \n 4: Black Hat", window_capture_name, morph_operator);
+}
+static void on_morph_elem(int, void*)
+{
+  setTrackbarPos("Element:\n 0: Rect - 1: Cross - 2: Ellipse", window_capture_name, morph_elem);
+}
+static void on_thresh(int, void*)
+{
+  setTrackbarPos("Thresh", window_capture_name, thresh);
+}
+
+int main(int argc, char* argv[])
+{
+    // Open the video camera.
+    std::string pipeline = "libcamerasrc"
+        " ! video/x-raw, width=800, height=600" // camera needs to capture at a higher resolution
+        " ! videoconvert"
+        " ! videoscale"
+        " ! video/x-raw, width=400, height=300" // can downsample the image after capturing
+        " ! videoflip method=rotate-180" // remove this line if the image is upside-down
+        " ! appsink drop=true max_buffers=2";
+    cv::VideoCapture cap(pipeline, cv::CAP_GSTREAMER);
+    if(!cap.isOpened()) {
+        printf("Could not open camera.\n");
+        return 1;
+    }
+
+    // Create the OpenCV window
+    cv::namedWindow(window_capture_name, cv::WINDOW_AUTOSIZE);
+    cv::namedWindow(window_detection_name, cv::WINDOW_AUTOSIZE);
+    
+    
+     // Trackbars to set thresholds for HSV values
+     createTrackbar("Low H", window_detection_name, &low_H, max_value_H, on_low_H_thresh_trackbar);
+     createTrackbar("High H", window_detection_name, &high_H, max_value_H, on_high_H_thresh_trackbar);
+     createTrackbar("Low S", window_detection_name, &low_S, max_value, on_low_S_thresh_trackbar);
+     createTrackbar("High S", window_detection_name, &high_S, max_value, on_high_S_thresh_trackbar);
+     createTrackbar("Low V", window_detection_name, &low_V, max_value, on_low_V_thresh_trackbar);
+     createTrackbar("High V", window_detection_name, &high_V, max_value, on_high_V_thresh_trackbar);
+    
+    //Trackbars for Morphology options 
+     createTrackbar("Operator:\n 0: Opening - 1: Closing \n 2: Gradient - 3: Top Hat \n 4: Black Hat", window_capture_name, &morph_operator, max_operator, on_morph_operator);
+     createTrackbar( "Element:\n 0: Rect - 1: Cross - 2: Ellipse", window_capture_name, &morph_elem, max_elem, on_morph_elem);
+     createTrackbar( "Kernel size:\n 2n +1", window_capture_name,
+     &morph_size, max_kernel_size, on_morph_size );
+     
+    
+    cv::Mat frame, frame_HSV, frame_threshold, canny_output;
+    vector<vector<Point> > contours;
+    // Measure the frame rate - initialise variables
+    int frame_id = 0;
+    timeval start, end;
+    gettimeofday(&start, NULL);
+
+    for(;;) {
+        if (!cap.read(frame)) {
+            printf("Could not read a frame.\n");
+            break;
+        }
+
+        // Convert from BGR to HSV colorspace
+        cvtColor(frame, frame_HSV, COLOR_BGR2HSV);
+        // Detect the object based on HSV Range Values
+        inRange(frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), frame_threshold);
+        
+        // Perform morphology
+        int operation = morph_operator + 2;
+        Mat element = getStructuringElement(morph_elem, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
+        morphologyEx(frame_threshold, frame_threshold, operation, element);
+        
+        //Canny(frame_threshold, canny_output, thresh, thresh*2, 3 );
+        findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
+        for( size_t i = 0; i< contours.size(); i++ ){
+            drawContours( frame, contours, (int)i, color, 2 );
+         }
+         
+        cv::Moments mu = moments(frame_threshold);
+        if(mu.m00 > 0){
+            mc = cv::Point2f( mu.m10/mu.m00 , mu.m01/mu.m00 ); 
+            std::cout << mc << std::endl;
+            circle(frame, mc, 4, color2, -1, 8, 0 );
+            putText(frame, "Centre", mc,FONT_HERSHEY_COMPLEX, 1,color2, 2);
+        }
+        
+        
+        //show frame
+        cv::imshow(window_capture_name, frame);
+        cv::imshow(window_detection_name, frame_threshold);
+        cv::waitKey(1);
+        
+        
+    }
+
+    // Free the camera 
+    cap.release();
+    return 0;
+}
+

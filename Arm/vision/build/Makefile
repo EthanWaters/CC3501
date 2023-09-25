@@ -67,10 +67,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/esl/Documents/CC3501/Arm/vision/SocketsDemo
+CMAKE_SOURCE_DIR = /home/esl/Documents/CC3501/Arm/vision
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build
+CMAKE_BINARY_DIR = /home/esl/Documents/CC3501/Arm/vision/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -99,9 +99,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build/CMakeFiles /home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles /home/esl/Documents/CC3501/Arm/vision/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/SocketsDemo/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -130,17 +130,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named vision
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
-.PHONY : main
+vision: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 vision
+.PHONY : vision
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+vision/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/build
+.PHONY : vision/fast
 
 src/main.o: src/main.cpp.o
 
@@ -148,7 +148,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -157,7 +157,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -166,7 +166,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 # Help Target
@@ -177,7 +177,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... main"
+	@echo "... vision"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

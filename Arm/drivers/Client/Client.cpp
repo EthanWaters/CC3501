@@ -108,7 +108,7 @@ Client::Client(ip, port)
     
 }
 
-bool Client::transmit(){
+bool Client::transcieve(){
     // Wait for events
     poll(pfds, sizeof(pfds)/sizeof(struct pollfd), -1);
 
@@ -124,7 +124,7 @@ bool Client::transmit(){
             return 0;
         }
         // Make the message null terminated
-        if(buffer.find("\x03\x18") != std::string::npos){
+        if(buf.find("\x03\x18") != std::string::npos){
             std::cout << "Program Terminated" << std::endl;
             close(socket_fd);
             freeaddrinfo(localAddress);
@@ -140,7 +140,7 @@ bool Client::transmit(){
         fgets(buf_input, sizeof(buf_input), stdin);
         clearPreviousLine();
         buf_input[strcspn(buf_input, "\n")] = 0; // Remove newline
-        if(buffer.find("\x03\x18") != std::string::npos){
+        if(buf_input.find("\x03\x18") != std::string::npos){
             std::cout << "Program Terminated" << std::endl;
             close(socket_fd);
             freeaddrinfo(localAddress);
