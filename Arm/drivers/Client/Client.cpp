@@ -11,15 +11,35 @@
 #include <poll.h>
 #include <iostream>
 #include <unistd.h>
+#include <thread>
+#include <mutex>
 
-//call it like ./client host port msg
-void clearPreviousLine() {
-    // Move the cursor to the beginning of the line and clear it
-    std::cout << "\033[A\033[K";
-}
 
-Client::Client(ip, port)
-{
+
+template <typename T>
+
+Client::Client(const char* ip, const char* port)
+{   
+    
+    this-> _ip = ip
+    this-> _port = port
+    
+    this-> _buf = buf
+    this-> _buffer_to_send = buffer_to_send
+    this-> _localAddress = localAddress
+    this-> _remoteAddress = remoteAddress
+    this-> _remoteAddress = socket_fd
+    
+    // Event loop
+    char buf [256];
+    char buffer_to_send [256];
+    
+    // initialise buffer empty
+    memset(buffer_to_send, 0, sizeof(buffer_to_send));
+	memset(buf, 0, sizeof(buf));
+	memset(buf_input, 0, sizeof(buf_input));
+
+    
         /*
     Use getaddrinfo to generate an address structure corresponding to the host
     to connect to.
@@ -96,19 +116,18 @@ Client::Client(ip, port)
         // add here if there are other files/sockets to monitor
     };
 
-    // Event loop
-    char buf [32+1+240+1];
-    char buffer_to_send [32+1+240+1];
-    char buf_input [240];
     
-    // initialise buffer empty
-    memset(buffer_to_send, 0, sizeof(buffer_to_send));
-	memset(buf, 0, sizeof(buf));
-	memset(buf_input, 0, sizeof(buf_input));
     
 }
 
-bool Client::transcieve(){
+//call it like ./client host port msg
+void Client::clearPreviousLine() {
+    // Move the cursor to the beginning of the line and clear it
+    std::cout << "\033[A\033[K";
+}
+
+
+bool Client::recieve(){
     // Wait for events
     poll(pfds, sizeof(pfds)/sizeof(struct pollfd), -1);
 
@@ -135,37 +154,60 @@ bool Client::transcieve(){
         printf("%s\n", buf);
         memset(buf, 0, sizeof(buf));
     }
-    if (pfds[1].revents) {
-        // Send the message 
-        fgets(buf_input, sizeof(buf_input), stdin);
-        clearPreviousLine();
-        buf_input[strcspn(buf_input, "\n")] = 0; // Remove newline
-        if(buf_input.find("\x03\x18") != std::string::npos){
-            std::cout << "Program Terminated" << std::endl;
-            close(socket_fd);
-            freeaddrinfo(localAddress);
-            freeaddrinfo(remoteAddress);
+    return 1
+}
+
+
+bool Client::send(){
+    strcat(buffer_to_send, "\0");
+    s_remote = sendto(socket_fd, buffer_to_send, strlen(buffer_to_send), 0, remoteAddress->ai_addr, remoteAddress->ai_addrlen);
+    if (s_remote == -1) {
+        perror("Failed to send.");
+        close(socket_fd);
+        freeaddrinfo(localAddress);
+        freeaddrinfo(remoteAddress);
+        return 0;
+    }
+    memset(buffer_to_send, 0, sizeof(buffer_to_send));
+    memset(buf_input, 0, sizeof(buf_input));
+    return 1
+}
+
+void Client::init_thread(T& input){
+    sending_thread = std::thread(&Client::SendingThread<T>, this, std::ref(input)); 
+}
+
+
+void Client::SendingThread(T& input){
+    while(!stop_thread){
+        std::unique_lock<std::mutex> lock(coordinates_mutex)
+        coordinates_cv.wait(lock, [&] {return stop_thread || input != current_coordinates; });
+        if(!stop_thread){
+            std::string data_to_send = input
+            lock.unlock()
+            send(input)
+            lock.lock()
+            current_coordinates = input
         }
-        strcat(buffer_to_send, buf_input);
-        strcat(buffer_to_send, "\0");
-        s_remote = sendto(socket_fd, buffer_to_send, strlen(buffer_to_send), 0, remoteAddress->ai_addr, remoteAddress->ai_addrlen);
-        if (s_remote == -1) {
-            perror("Failed to send.");
-            close(socket_fd);
-            freeaddrinfo(localAddress);
-            freeaddrinfo(remoteAddress);
-            return 0;
-        }
-        memset(buffer_to_send, 0, sizeof(buffer_to_send));
-        memset(buf_input, 0, sizeof(buf_input));
     }
 }
+
+
+void Client::close_thread(){
+    if(sending_thread.joinable()){
+     stop_thread = true;
+     coordinates_cv.notify_all()
+     sending_thread.join()   
+    }
+}
+
+
+Client::~client(){
     
     // Free the memory returned by getaddrinfo
     freeaddrinfo(localAddress);
     freeaddrinfo(remoteAddress);
-				
-
+            
     // Close the socket
     close(socket_fd);
 }
