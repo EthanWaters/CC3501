@@ -1,20 +1,22 @@
 #include <PiCameraDetection.h>
 
-
 int main() {
-    // Create instances of PiCameraDetection for each thread
-    PiCameraDetection detector1;
-    PiCameraDetection detector2; // Create more instances as needed
+    // Number of object detection threads
+    const int num_threads = 3;
 
-    // Initialize settings for each detector (e.g., set different thresholds)
+    // Create instances of PiCameraDetection
+    std::vector<PiCameraDetection> detectors(num_threads);
 
-    // Start threads to process frames
-    std::thread thread1(process_frames, std::ref(detector1));
-    std::thread thread2(process_frames, std::ref(detector2)); // Create more threads as needed
+    // Create and start the central thread
+    std::thread central_thread(central_thread_function, std::ref(detectors));
 
-    // Join threads (wait for them to finish)
-    thread1.join();
-    thread2.join(); // Join more threads as needed
+    // Wait for all detectors to finish
+    for (auto& detector : detectors) {
+        detector.join_detection_thread();
+    }
+
+    // Wait for the central thread to finish
+    central_thread.join();
 
     return 0;
 }
