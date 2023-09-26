@@ -1,45 +1,15 @@
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <string.h>
-#include <errno.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <netinet/udp.h>
-#include <poll.h>
-#include <iostream>
-#include <unistd.h>
-#include <thread>
-#include <mutex>
-
-
-
-template <typename T>
+#include <Client.h>
 
 Client::Client(const char* ip, const char* port)
 {   
     
     this-> _ip = ip
     this-> _port = port
-    
-    this-> _buf = buf
-    this-> _buffer_to_send = buffer_to_send
-    this-> _localAddress = localAddress
-    this-> _remoteAddress = remoteAddress
-    this-> _remoteAddress = socket_fd
-    
-    // Event loop
-    char buf [256];
-    char buffer_to_send [256];
-    
-    // initialise buffer empty
-    memset(buffer_to_send, 0, sizeof(buffer_to_send));
-	memset(buf, 0, sizeof(buf));
-	memset(buf_input, 0, sizeof(buf_input));
 
-    
+    // initialise buffer empty
+    char _buf[256]; 
+    memset(buf, 0, sizeof(buf));
+	
         /*
     Use getaddrinfo to generate an address structure corresponding to the host
     to connect to.
@@ -85,8 +55,6 @@ Client::Client(const char* ip, const char* port)
         freeaddrinfo(remoteAddress);
         return 1;
     }
-    
-    
 
     // Allow multiple applications to use the same port (to run two versions of the app side by side for testing)
     int optval = true;
@@ -98,8 +66,6 @@ Client::Client(const char* ip, const char* port)
         perror("Failed to set SO_BROADCAST");
         return 1;
     }
-
-   
 
     // Prepare the pollfd array with the list of file handles to monitor
     struct pollfd pfds [] = {
@@ -115,52 +81,20 @@ Client::Client(const char* ip, const char* port)
 		}
         // add here if there are other files/sockets to monitor
     };
-
-    
-    
 }
 
-//call it like ./client host port msg
+
 void Client::clearPreviousLine() {
     // Move the cursor to the beginning of the line and clear it
     std::cout << "\033[A\033[K";
 }
 
 
-bool Client::recieve(){
-    // Wait for events
-    poll(pfds, sizeof(pfds)/sizeof(struct pollfd), -1);
-
-    // Check if a packet arrived
-    if (pfds[0].revents) {
-        // Read the incoming packet
-        ssize_t bytes_read = read(socket_fd, buf, sizeof(buf) - 2); // with room for a trailing null
-        if (bytes_read < 0) {
-            perror("Failed to recieve.");
-            close(socket_fd);
-            freeaddrinfo(localAddress);
-            freeaddrinfo(remoteAddress);
-            return 0;
-        }
-        // Make the message null terminated
-        if(buf.find("\x03\x18") != std::string::npos){
-            std::cout << "Program Terminated" << std::endl;
-            close(socket_fd);
-            freeaddrinfo(localAddress);
-            freeaddrinfo(remoteAddress);
-        }
-        buf[bytes_read] = 0;
-        buf[bytes_read+1] = 0;
-        printf("%s\n", buf);
-        memset(buf, 0, sizeof(buf));
-    }
-    return 1
-}
-
-
-bool Client::send(){
-    strcat(buffer_to_send, "\0");
-    s_remote = sendto(socket_fd, buffer_to_send, strlen(buffer_to_send), 0, remoteAddress->ai_addr, remoteAddress->ai_addrlen);
+template <typename T>
+bool Client::send(T& input){
+    const char* serialised_input = reinterpret_cast<const char*>(&input);
+    size_t input_size = sizeof(input)
+    s_remote = sendto(socket_fd, serialised_input, input_size, 0, remoteAddress->ai_addr, remoteAddress->ai_addrlen);
     if (s_remote == -1) {
         perror("Failed to send.");
         close(socket_fd);
@@ -168,17 +102,18 @@ bool Client::send(){
         freeaddrinfo(remoteAddress);
         return 0;
     }
-    memset(buffer_to_send, 0, sizeof(buffer_to_send));
-    memset(buf_input, 0, sizeof(buf_input));
     return 1
 }
 
+
+template <typename T>
 void Client::init_thread(T& input){
-    sending_thread = std::thread(&Client::SendingThread<T>, this, std::ref(input)); 
+    sending_thread = std::thread(&Client::sending_thread<T>, this, std::ref(input)); 
 }
 
 
-void Client::SendingThread(T& input){
+template <typename T>
+void Client::sending_thread(T& input){
     while(!stop_thread){
         std::unique_lock<std::mutex> lock(coordinates_mutex)
         coordinates_cv.wait(lock, [&] {return stop_thread || input != current_coordinates; });
