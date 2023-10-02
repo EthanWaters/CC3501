@@ -2,13 +2,19 @@
 
 bool is_display;
 
+// Shared data structures
+std::vector<cv::Point2f> shared_coordinates(num_objects);
+std::vector<double> shared_angles(num_objects);
+std::mutex coordinates_mutex;
+
+
 int main() {
     
     // Create instances of PiCameraDetection
-    PiCameraDetection detector_1();
-    PiCameraDetection detector_2();
-    PiCameraDetection detector_3();
-    PiCameraDetection detector_4();
+    PiCameraDetection detector_1;
+    PiCameraDetection detector_2;
+    PiCameraDetection detector_3;
+    PiCameraDetection detector_4;
 
        
      while (true) {
@@ -75,8 +81,6 @@ int main() {
 	}
     
 
-    // Wait for the central thread to finish
-    central_thread.join();
     
     return 0;
 }

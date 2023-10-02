@@ -52,7 +52,7 @@ void PiCameraDetection::init_window(){
 }
 
 
-void PiCameraDetection::threshold(){	
+<cv::Point2f> PiCameraDetection::detect_coordinates(<cv::Point2f>& mc){	
 	if (!cap.read(frame)) {
             printf("Could not read a frame.\n");
             break;
@@ -69,16 +69,14 @@ void PiCameraDetection::threshold(){
 	int operation = morph_operator + 2;
 	Mat element = getStructuringElement(morph_elem, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
 	morphologyEx(frame_threshold, frame_threshold, operation, element);
-}	
-
-void PiCameraDetection::find_centroid_coords(std::vector<cv::Point2f>& mc){	
+	
 	cv::Moments mu = moments(frame_threshold);
 	if(mu.m00 > 0){
 		mc = cv::Point2f( mu.m10/mu.m00 , mu.m01/mu.m00 ); 
 		
 	}
 	cv.notify_one();
-}
+}	
 
 
 void PiCameraDetection::populate_window(){	
