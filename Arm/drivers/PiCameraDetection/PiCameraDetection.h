@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iomanip>
 #include <thread>
+#include <condition_variable>
 
 using namespace std;
 using namespace cv;
@@ -26,8 +27,7 @@ class PiCameraDetection {
 		void save_calibration(const std::string& filename);
 		void close();
 		std::mutex mtx;
-		std::condition_variable cv;
-		std::atomic<bool> stop_threads(false);
+		std::atomic<bool> stop_threads;
 		std::vector<cv::Point2f> mc;
 		
 	
@@ -70,5 +70,7 @@ class PiCameraDetection {
 		cv::Mat frame, frame_HSV, frame_threshold, canny_output;
 		vector<vector<Point> > contours;
 		cv::VideoCapture cap;
-		
+		std::condition_variable cv;
+		std::thread detection_thread;
+        std::atomic<bool> stop_threads;
 };

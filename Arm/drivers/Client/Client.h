@@ -15,6 +15,7 @@
 #include <thread>
 #include <mutex>
 
+
 class Client {
 	public:
 		Client(const char* ip, const char* port);
@@ -28,6 +29,6 @@ class Client {
 	private:
 		struct addrinfo *localAddress;  // For local address (for receiving)
 		struct addrinfo *remoteAddress; // For remote address (for sending)
-		const char* ip;
-		const char* port;
+		const char* _ip;
+		const char* _port;
 };

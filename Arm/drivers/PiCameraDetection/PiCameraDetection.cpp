@@ -6,7 +6,7 @@ PiCameraDetection::PiCameraDetection()
 	static const String window_capture_name = "Camera";
 	static const String window_detection_name = "Camera_Threshold";
 	cv::Mat frame, frame_threshold;
-	
+	std::atomic<bool> stop_threads = false;
     // Open the video camera.
     std::string pipeline = "libcamerasrc"
         " ! video/x-raw, width=800, height=600" // camera needs to capture at a higher resolution
@@ -80,6 +80,7 @@ void PiCameraDetection::find_centroid_coords(std::vector<cv::Point2f>& mc){
 	cv.notify_one();
 }
 
+
 void PiCameraDetection::populate_window(){	
 	vector<vector<Point> > contours;
 	findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
@@ -94,6 +95,32 @@ void PiCameraDetection::populate_window(){
 	cv::imshow(window_detection_name, frame_threshold);
 	cv::waitKey(1);	
 	
+}
+
+
+void PiCameraDetection::start_detection() {
+    // Start the detection thread
+    stop_threads = false;
+    detection_thread = std::thread(&PiCameraDetection::detect_coordinates, this);
+}
+
+
+
+void PiCameraDetection::stop_detection() {
+    // Signal the detection thread to stop and wait for it to finish
+    stop_threads = true;
+    if (detection_thread.joinable()) {
+        detection_thread.join();
+    }
+}
+
+
+
+void PiCameraDetection::detect_coordinates() {
+    while (!stop_threads) {
+        // Implement object detection logic and coordinate calculation here
+        // Continuously detect coordinates until stop_threads is true
+    }
 }
 
 
