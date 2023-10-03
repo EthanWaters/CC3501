@@ -60,19 +60,18 @@ def trajectory_motion(robot, motion_data_event, motion_data):
 
 def jog_motion(robot, receive_data_event, receive_data):
     robot.set_jog_control(True)
-    while True:
-        receive_data_event.wait()
-        receive_data_event.clear()
-        while not receive_data.empty():
-            data = receive_data.get()
-            data = eval(data)
-            if isinstance(data, list):
-                robot.jog_joints(data)
-            elif data == 1:
-                robot.close_gripper(SPEED)
-            elif data == 2:
-                robot.open_gripper(SPEED)
-    robot.set_jog_control(False)
+    receive_data_event.wait()
+    receive_data_event.clear()
+    while not receive_data.empty():
+        data = receive_data.get()
+        data = eval(data)
+        if isinstance(data, list):
+            robot.jog_joints(data)
+        elif data == 1:
+            robot.close_gripper(SPEED)
+        elif data == 2:
+            robot.open_gripper(SPEED)
+    
    
    
 def command(robot, command_data_event, command_data):
