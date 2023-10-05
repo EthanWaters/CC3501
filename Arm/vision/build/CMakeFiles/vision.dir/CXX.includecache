@@ -6,6 +6,40 @@
 
 #IncludeRegexTransform: 
 
+/home/esl/Documents/CC3501/Arm/drivers/Client/Client.h
+sys/types.h
+-
+sys/socket.h
+-
+netdb.h
+-
+string.h
+-
+cstring
+-
+errno.h
+-
+stdio.h
+-
+unistd.h
+-
+arpa/inet.h
+-
+netinet/in.h
+-
+netinet/udp.h
+-
+poll.h
+-
+iostream
+-
+unistd.h
+-
+thread
+-
+mutex
+-
+
 /home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.h
 opencv2/opencv.hpp
 /home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/opencv2/opencv.hpp
@@ -25,12 +59,16 @@ iomanip
 -
 thread
 -
+cmath
+-
 condition_variable
 -
 
 /home/esl/Documents/CC3501/Arm/vision/src/main.cpp
 PiCameraDetection/PiCameraDetection.h
 /home/esl/Documents/CC3501/Arm/vision/src/PiCameraDetection/PiCameraDetection.h
+Client/Client.h
+/home/esl/Documents/CC3501/Arm/vision/src/Client/Client.h
 
 /usr/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp

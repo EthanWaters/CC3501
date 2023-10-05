@@ -72,19 +72,6 @@ def jog_motion(robot, receive_data_event, receive_data):
         elif data == 2:
             robot.open_gripper(SPEED)
     
-   
-   
-def command(robot, command_data_event, command_data):
-    while True:
-        command_data_event.wait()
-        command_data_event.clear()
-        while not command_data.empty():  
-            command = command_data.get()
-            if command == 1:
-                robot.close_gripper(SPEED)
-            elif command == 2:
-                robot.open_gripper(SPEED)
-    
 
 
 def main():
@@ -97,15 +84,9 @@ def main():
         receive_data = queue.Queue()
         receive_data_event = threading.Event()
         
-        #command_data = queue.Queue()
-        #command_data_event = threading.Event()
-
         server_thread = threading.Thread(target=server_init, args=(receive_data, receive_data_event, HOST, PORT, BUFF_SIZE))
         server_thread.start()
-        
-        #command_thread = threading.Thread(target=command, args=(robot, command_data_event, command_data))
-        #command_thread.start()
-        
+                
         # different methodsof controling the robot
         # trajectory_motion(motion_data_event, motion_data)
         jog_motion(robot, receive_data_event, receive_data)
