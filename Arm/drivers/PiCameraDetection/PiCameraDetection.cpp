@@ -52,7 +52,7 @@ void PiCameraDetection::init_window(){
 }
 
 
-<cv::Point2f> PiCameraDetection::detect_coordinates(<cv::Point2f>& mc){	
+void PiCameraDetection::detect_coordinates(){	
 	if (!cap.read(frame)) {
             printf("Could not read a frame.\n");
             break;
@@ -75,7 +75,6 @@ void PiCameraDetection::init_window(){
 		mc = cv::Point2f( mu.m10/mu.m00 , mu.m01/mu.m00 ); 
 		
 	}
-	cv.notify_one();
 }	
 
 
@@ -93,70 +92,6 @@ void PiCameraDetection::populate_window(){
 	cv::imshow(window_detection_name, frame_threshold);
 	cv::waitKey(1);	
 	
-}
-
-
-void PiCameraDetection::start_detection() {
-    // Start the detection thread
-    stop_threads = false;
-    detection_thread = std::thread(&PiCameraDetection::detect_coordinates, this);
-}
-
-
-
-void PiCameraDetection::stop_detection() {
-    // Signal the detection thread to stop and wait for it to finish
-    stop_threads = true;
-    if (detection_thread.joinable()) {
-        detection_thread.join();
-    }
-}
-
-
-
-void PiCameraDetection::detect_coordinates() {
-    while (!stop_threads) {
-        // Implement object detection logic and coordinate calculation here
-        // Continuously detect coordinates until stop_threads is true
-    }
-}
-
-
-void PiCameraDetection::central_thread_function(std::vector<PiCameraDetection>& detectors) {
-    while (true) {
-        std::string command;
-        std::cin >> command;
-
-        if (command == "exit") {
-            stop_threads = true;
-            break;
-        } else if (command == "load_thresholds") {
-            // Load thresholds for all detectors
-            for (auto& detector : detectors) {
-                detector.load_thresholds();
-            }
-            std::cout << "Thresholds loaded." << std::endl;
-        } else if (command == "save_thresholds") {
-            // Save thresholds for all detectors
-            for (auto& detector : detectors) {
-                detector.save_thresholds();
-            }
-            std::cout << "Thresholds saved." << std::endl;
-        } else if (command == "start_detection") {
-            // Start object detection threads
-            for (auto& detector : detectors) {
-                detector.start_detection();
-            }
-        } else if (command == "stop_detection") {
-            // Stop object detection threads
-            for (auto& detector : detectors) {
-                detector.stop_detection();
-            }
-        }
-
-        // Notify waiting threads (if any) that a command was processed
-        cv.notify_all();
-	}
 }
 
 
@@ -215,6 +150,11 @@ void PiCameraDetection::load_calibration(const std::string& filename) {
 }
 
 
+cv::Point2f get_centroid() const {
+	return mc;
+}
+    
+    
 void PiCameraDetection::close(){	
 	cap.release();
 }
