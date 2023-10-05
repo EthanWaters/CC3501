@@ -22,6 +22,7 @@ class PiCameraDetection {
 		void init_window();
 		void populate_window();
 		void detect_coordinates();
+		cv::Point2f get_centroid();
 		void load_calibration(const std::string& filename);
 		void save_calibration(const std::string& filename);
 		void close();
@@ -64,19 +65,19 @@ class PiCameraDetection {
 		Scalar color;
 		Scalar color2;
 		cv::Mat frame, frame_HSV, frame_threshold, canny_output;
-		vector<vector<Point> > contours;
+		vector<vector<Point>> contours;
 		cv::VideoCapture cap;
-		<cv::Point2f> mc;
+		cv::Point2f mc;
 };
 
-void get_arm_angles(float& angles, <cv::Point2f> centroids){
+void get_arm_angles(volatile float& angles, cv::Point2f centroids, size_t arrayLength){
 	//(EXAMPLE)
 	//Centroid 0: Shoulder 
 	//Centroid 1: Elbow 
 	//Centroid 2: Wrist
 	//Centroid 3: Knuckle 
 	
-	int arrayLength = sizeof(centroids) / sizeof(centroids[0]);
+	size_t arrayLength = centroids.size();
 	for(int i=0; i<arrayLength; i++){
 		angles[i] = get_joint_angle(centroids[i], centroids[i+2], centroids[i+1]);
 	}
@@ -84,7 +85,7 @@ void get_arm_angles(float& angles, <cv::Point2f> centroids){
 }
 
 
-float get_joint_angle(<cv::Point2f> centroid1, <cv::Point2f> centroid2, <cv::Point2f> centroid_ref){
+volatile float get_joint_angle(cv::Point2f centroid1, cv::Point2f centroid2, cv::Point2f centroid_ref){
 	
 	// scale values to be with reference to centroid_ref
 	
@@ -96,7 +97,7 @@ float get_joint_angle(<cv::Point2f> centroid1, <cv::Point2f> centroid2, <cv::Poi
     double angle2 = atan2(vector2.y, vector2.x);
 
     // Calculate the angle difference (angle2 - angle1)
-    float angleDifference = angle2 - angle1;
+    volatile float angleDifference = angle2 - angle1;
 
     // Ensure the angle is within the range of -pi to pi
     if (angleDifference > CV_PI) {
@@ -110,12 +111,12 @@ float get_joint_angle(<cv::Point2f> centroid1, <cv::Point2f> centroid2, <cv::Poi
 }
 
 
-void get_angle_differences(float& angle_differences, float angles, float previous_angles){
+void get_angle_differences(volatile float& angle_differences, volatile float angles, volatile float previous_angles, size_t arrayLength){
 	//(EXAMPLE)
 	//Angle 0: Elbow 
 	//Angle 1: Wrist
 	
-	int arrayLength = sizeof(angles) / sizeof(angles[0]);
+	size_t arrayLength = centroids.size();
 	for(int i=0; i<arrayLength; i++){
 		angle_differences[i] = previous_angles[i] - angles[i];
 	}

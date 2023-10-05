@@ -2,15 +2,15 @@
 #include "Client/Client.h"
 
 
-#define NUM_OBJECTS 4;
-bool is_display;
+#define NUM_OBJECTS 4
+
 
 // Shared data structures
 volatile float angles[NUM_OBJECTS - 2];
 volatile float previous_angles[NUM_OBJECTS - 2];
-float angle_differences[NUM_OBJECTS - 2];
-<cv::Point2f> centroids[NUM_OBJECTS];
-
+volatile float angle_differences[NUM_OBJECTS - 2];
+cv::Point2f centroids[NUM_OBJECTS];
+bool is_display;
 
 int main() {
     
@@ -61,15 +61,15 @@ int main() {
         } else if (command == "exit") {
             
             // Stop object detection threads
-            detector_1.stop_detection();
-            detector_2.stop_detection();
-            detector_3.stop_detection();
-            detector_4.stop_detection();
-            return 0
+            detector_1.close();
+            detector_2.close();
+            detector_3.close();
+            detector_4.close();
+            return 0;
             
         } else if (command == "start") {
             
-            previous_angle = angles
+            previous_angle = angles;
             while (true) {
                 std::string command;
                 std::cin >> command;
@@ -77,11 +77,11 @@ int main() {
                 previous_angles = angles;
                 if (command == "exit") {            
                     // Stop object detection threads
-                    detector_1.stop_detection();
-                    detector_2.stop_detection();
-                    detector_3.stop_detection();
-                    detector_4.stop_detection();
-                    return 0
+                    detector_1.close();
+                    detector_2.close();
+                    detector_3.close();
+                    detector_4.close();
+                    return 0;
             
                 }
                  // Start object detection threads
@@ -98,7 +98,7 @@ int main() {
                 
                 get_arm_angles(angles, centroids);
                 get_angle_differences(angle_differences, angles, previous_angles);
-                client.send(angle_differences)
+                client.send(angle_differences);
                 
             }
         }
