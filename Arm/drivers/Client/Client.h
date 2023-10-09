@@ -21,8 +21,15 @@ class Client {
 		Client(const char* ip, const char* port);
 		void clearPreviousLine();
 		bool recieve();
+		
+		template <typename T>
 		bool send(T& input);
+		
+		template <typename T>
 		void init_thread(T& input);
+		
+		template <typename T>
+		
 		void sending_thread(T& input);
 		void close_thread();
 	

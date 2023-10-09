@@ -131,6 +131,7 @@ vision: /usr/lib/arm-linux-gnueabihf/libopencv_videostab.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_viz.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_xobjdetect.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_xphoto.so.4.5.1
+vision: PiCameraDetection/libClient.a
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_highgui.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_datasets.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_plot.so.4.5.1

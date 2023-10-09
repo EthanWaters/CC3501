@@ -1,14 +1,14 @@
-#include "PiCameraDetection/PiCameraDetection.h"
-#include "Client/Client.h"
+#include "PiCameraDetection.h"
+#include "Client.h"
 
 
 #define NUM_OBJECTS 4
-
+#define NUM_ANGLES NUM_OBJECTS-2
 
 // Shared data structures
-volatile float angles[NUM_OBJECTS - 2];
-volatile float previous_angles[NUM_OBJECTS - 2];
-volatile float angle_differences[NUM_OBJECTS - 2];
+float angles[NUM_ANGLES];
+float previous_angles[NUM_ANGLES];
+float angle_differences[NUM_ANGLES];
 cv::Point2f centroids[NUM_OBJECTS];
 bool is_display;
 
@@ -69,12 +69,13 @@ int main() {
             
         } else if (command == "start") {
             
-            previous_angle = angles;
             while (true) {
                 std::string command;
                 std::cin >> command;
                 
-                previous_angles = angles;
+                for (int i = 0; i < NUM_ANGLES; i++) {
+                    previous_angles[i] = angles[i];
+                }
                 if (command == "exit") {            
                     // Stop object detection threads
                     detector_1.close();
@@ -96,8 +97,8 @@ int main() {
                 centroids[2] = detector_3.get_centroid();
                 centroids[3] = detector_4.get_centroid();
                 
-                get_arm_angles(angles, centroids);
-                get_angle_differences(angle_differences, angles, previous_angles);
+                get_arm_angles(angles, centroids, NUM_ANGLES);
+                get_angle_differences(angle_differences, angles, previous_angles, NUM_ANGLES);
                 client.send(angle_differences);
                 
             }
@@ -115,7 +116,7 @@ int main() {
         centroids[2] = detector_3.get_centroid();
         centroids[3] = detector_4.get_centroid();
         
-        get_arm_angles(angles, centroids);
+        get_arm_angles(angles, centroids, NUM_ANGLES);
         
            
         if(is_display == true){

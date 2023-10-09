@@ -99,14 +99,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles /home/esl/Documents/CC3501/Arm/vision/build//CMakeFiles/progress.marks
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles /home/esl/Documents/CC3501/Arm/vision/build/PiCameraDetection//CMakeFiles/progress.marks
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PiCameraDetection/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PiCameraDetection/clean
 .PHONY : clean
 
 # The main clean target
@@ -116,84 +116,60 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 preinstall
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PiCameraDetection/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 preinstall
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PiCameraDetection/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-#=============================================================================
-# Target rules for targets named vision
+# Convenience name for target.
+PiCameraDetection/CMakeFiles/Client.dir/rule:
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PiCameraDetection/CMakeFiles/Client.dir/rule
+.PHONY : PiCameraDetection/CMakeFiles/Client.dir/rule
 
-# Build rule for target.
-vision: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 vision
-.PHONY : vision
+# Convenience name for target.
+Client: PiCameraDetection/CMakeFiles/Client.dir/rule
 
-# fast build rule for target.
-vision/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/build
-.PHONY : vision/fast
-
-#=============================================================================
-# Target rules for targets named PiCameraDetectionLib
-
-# Build rule for target.
-PiCameraDetectionLib: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PiCameraDetectionLib
-.PHONY : PiCameraDetectionLib
-
-# fast build rule for target.
-PiCameraDetectionLib/fast:
-	$(MAKE) $(MAKESILENT) -f Client/CMakeFiles/PiCameraDetectionLib.dir/build.make Client/CMakeFiles/PiCameraDetectionLib.dir/build
-.PHONY : PiCameraDetectionLib/fast
-
-#=============================================================================
-# Target rules for targets named Client
-
-# Build rule for target.
-Client: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Client
 .PHONY : Client
 
 # fast build rule for target.
 Client/fast:
-	$(MAKE) $(MAKESILENT) -f PiCameraDetection/CMakeFiles/Client.dir/build.make PiCameraDetection/CMakeFiles/Client.dir/build
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f PiCameraDetection/CMakeFiles/Client.dir/build.make PiCameraDetection/CMakeFiles/Client.dir/build
 .PHONY : Client/fast
 
-src/main.o: src/main.cpp.o
+Client.o: Client.cpp.o
 
-.PHONY : src/main.o
+.PHONY : Client.o
 
 # target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
+Client.cpp.o:
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f PiCameraDetection/CMakeFiles/Client.dir/build.make PiCameraDetection/CMakeFiles/Client.dir/Client.cpp.o
+.PHONY : Client.cpp.o
 
-src/main.i: src/main.cpp.i
+Client.i: Client.cpp.i
 
-.PHONY : src/main.i
+.PHONY : Client.i
 
 # target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
+Client.cpp.i:
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f PiCameraDetection/CMakeFiles/Client.dir/build.make PiCameraDetection/CMakeFiles/Client.dir/Client.cpp.i
+.PHONY : Client.cpp.i
 
-src/main.s: src/main.cpp.s
+Client.s: Client.cpp.s
 
-.PHONY : src/main.s
+.PHONY : Client.s
 
 # target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
+Client.cpp.s:
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(MAKE) $(MAKESILENT) -f PiCameraDetection/CMakeFiles/Client.dir/build.make PiCameraDetection/CMakeFiles/Client.dir/Client.cpp.s
+.PHONY : Client.cpp.s
 
 # Help Target
 help:
@@ -204,11 +180,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Client"
-	@echo "... PiCameraDetectionLib"
-	@echo "... vision"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
+	@echo "... Client.o"
+	@echo "... Client.i"
+	@echo "... Client.s"
 .PHONY : help
 
 
@@ -220,6 +194,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/esl/Documents/CC3501/Arm/vision/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

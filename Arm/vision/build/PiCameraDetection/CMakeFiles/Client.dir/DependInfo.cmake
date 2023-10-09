@@ -4,18 +4,16 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/esl/Documents/CC3501/Arm/vision/src/main.cpp" "/home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles/vision.dir/src/main.cpp.o"
+  "/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp" "/home/esl/Documents/CC3501/Arm/vision/build/PiCameraDetection/CMakeFiles/Client.dir/Client.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/usr/include/opencv4"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/esl/Documents/CC3501/Arm/vision/build/PiCameraDetection/CMakeFiles/Client.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libPiCameraDetectionLib.a CMakeFiles/PiCameraDetectionLib.dir/PiCameraDetection.cpp.o
+/usr/bin/ranlib libPiCameraDetectionLib.a
