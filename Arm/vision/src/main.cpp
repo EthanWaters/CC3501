@@ -22,7 +22,7 @@ int main() {
     
     // intialise client class to send data over socket
     Client client("192.168.0.252", "54321");
-    
+    client.init();
        
      while (true) {
         std::string command;

@@ -20,22 +20,19 @@ class Client {
 	public:
 		Client(const char* ip, const char* port);
 		void clearPreviousLine();
-		bool recieve();
+		int init();
 		
 		template <typename T>
-		bool send(T& input);
+		int send(T& input);
 		
-		template <typename T>
-		void init_thread(T& input);
-		
-		template <typename T>
-		
-		void sending_thread(T& input);
 		void close_thread();
 	
 	private:
 		struct addrinfo *localAddress;  // For local address (for receiving)
 		struct addrinfo *remoteAddress; // For remote address (for sending)
+		struct addrinfo hints; 
 		const char* _ip;
 		const char* _port;
+		int socket_fd;
+		int s_remote;
 };

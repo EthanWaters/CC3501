@@ -21,43 +21,45 @@ class PiCameraDetection {
 		PiCameraDetection();	
 		void init_window();
 		void populate_window();
-		void detect_coordinates();
+		int detect_coordinates();
 		cv::Point2f get_centroid();
-		void load_calibration(const std::string& filename);
-		void save_calibration(const std::string& filename);
+		int load_calibration(const std::string& filename);
+		int save_calibration(const std::string& filename);
 		void close();
+		int init_capture();
 		
 		
 	
 	private:
-		static void on_low_H_thresh_trackbar(int, void *);
-		static void on_high_H_thresh_trackbar(int, void *);
-		static void on_low_S_thresh_trackbar(int, void *);
-		static void on_high_S_thresh_trackbar(int, void *);
-		static void on_low_V_thresh_trackbar(int, void *);
-		static void on_high_V_thresh_trackbar(int, void *);
-		static void on_low_R_thresh_trackbar(int, void *);
-		static void on_high_R_thresh_trackbar(int, void *);
-		static void on_low_G_thresh_trackbar(int, void *);
-		static void on_high_G_thresh_trackbar(int, void *);
-		static void on_low_B_thresh_trackbar(int, void *);
-		static void on_high_B_thresh_trackbar(int, void *);
+		static void on_low_H_thresh_trackbar(int, PiCameraDetection*);
+		static void on_high_H_thresh_trackbar(int, PiCameraDetection*);
+		static void on_low_S_thresh_trackbar(int, PiCameraDetection*);
+		static void on_high_S_thresh_trackbar(int, PiCameraDetection*);
+		static void on_low_V_thresh_trackbar(int, PiCameraDetection*);
+		static void on_high_V_thresh_trackbar(int, PiCameraDetection*);
+		static void on_low_R_thresh_trackbar(int, PiCameraDetection*);
+		static void on_high_R_thresh_trackbar(int, PiCameraDetection*);
+		static void on_low_G_thresh_trackbar(int, PiCameraDetection*);
+		static void on_high_G_thresh_trackbar(int, PiCameraDetection*);
+		static void on_low_B_thresh_trackbar(int, PiCameraDetection*);
+		static void on_high_B_thresh_trackbar(int, PiCameraDetection*);
 		static void on_morph_size(int, void*);
 		static void on_morph_operator(int, void*);
 		static void on_morph_elem(int, void*);
 		static void on_thresh(int, void*);
-		const String window_capture_name;
-		const String window_detection_name;
+		static const String window_capture_name;
+		static const String window_detection_name;
+		PiCameraDetection* current_instance;
 		int morph_elem;
 		int morph_size;
 		int morph_operator;
 		int thresh;
-		const int max_operator;
-		const int max_elem;
-		const int max_kernel_size;
-		const int max_thresh;
-		const int max_value_H;
-		const int max_value;
+		static const int max_operator;
+		static const int max_elem;
+		static const int max_kernel_size;
+		static const int max_thresh;
+		static const int max_value_H;
+		static const int max_value;
 		int low_H, low_S, low_V;
 		int high_R, high_G, high_B;
 		int low_R, low_G, low_B;
@@ -68,6 +70,7 @@ class PiCameraDetection {
 		vector<vector<Point>> contours;
 		cv::VideoCapture cap;
 		cv::Point2f mc;
+		
 };
 
 

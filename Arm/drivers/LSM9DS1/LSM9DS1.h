@@ -7,7 +7,6 @@
 class LSM9DS1 {
 public:
     LSM9DS1();
-    void initialise();
     void readAccel(int16_t& x, int16_t& y, int16_t& z);
     void readGyro(int16_t& x, int16_t& y, int16_t& z);
     void readMag(int16_t& x, int16_t& y, int16_t& z);

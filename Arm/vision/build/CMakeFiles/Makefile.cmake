@@ -7,8 +7,6 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/esl/Documents/CC3501/Arm/drivers/Client/CMakeLists.txt"
-  "/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/CMakeLists.txt"
   "../CMakeLists.txt"
   "CMakeFiles/3.18.4/CMakeCCompiler.cmake"
   "CMakeFiles/3.18.4/CMakeCXXCompiler.cmake"
@@ -49,13 +47,9 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
-  "Client/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "PiCameraDetection/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/vision.dir/DependInfo.cmake"
-  "Client/CMakeFiles/PiCameraDetectionLib.dir/DependInfo.cmake"
-  "PiCameraDetection/CMakeFiles/Client.dir/DependInfo.cmake"
   )

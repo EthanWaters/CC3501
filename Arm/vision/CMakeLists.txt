@@ -4,23 +4,21 @@ set(CMAKE_CXX_STANDARD 20)
 set(COMPILE_DEFINITIONS -O2 -Wall)
 find_package(OpenCV REQUIRED)
 
-set(Client /home/esl/Documents/CC3501/Arm/drivers/Client)
-set(PiCameraDetection /home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection)
+set(ProjectDir /home/esl/Documents/CC3501/Arm)
+#cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH ProjectDir)
+message("ProjectDir is ${ProjectDir}")
 
-# Add the include directories for PiCameraDetection and Client
-include_directories(/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection)
-include_directories(/home/esl/Documents/CC3501/Arm/drivers/Client)
+#Add the include directories for PiCameraDetection and Client
+include_directories(${ProjectDir}/drivers/PiCameraDetection)
+include_directories(${ProjectDir}/drivers/Client)
 
-add_subdirectory(${PiCameraDetection} PiCameraDetection)
-add_subdirectory(${Client} Client)
-
-add_executable(vision src/main.cpp)
-target_include_directories(Client PUBLIC /home/esl/Documents/CC3501/Arm/drivers/Client)
-target_include_directories(PiCameraDetection PUBLIC /home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection)
+add_executable(vision 
+    src/main.cpp
+    ${ProjectDir}/drivers/Client/Client.cpp
+    ${ProjectDir}/drivers/PiCameraDetection/PiCameraDetection.cpp
+)
 
 target_link_libraries(vision ${OpenCV_LIBS})
-target_link_libraries(vision Client)
-target_link_libraries(vision PiCameraDetection)
 
 
 

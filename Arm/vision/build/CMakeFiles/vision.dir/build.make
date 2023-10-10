@@ -89,14 +89,44 @@ CMakeFiles/vision.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/vision.dir/src/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/esl/Documents/CC3501/Arm/vision/src/main.cpp -o CMakeFiles/vision.dir/src/main.cpp.s
 
+CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o: CMakeFiles/vision.dir/flags.make
+CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o: /home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o -c /home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp
+
+CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp > CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.i
+
+CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp -o CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.s
+
+CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o: CMakeFiles/vision.dir/flags.make
+CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o: /home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o -c /home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp
+
+CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp > CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.i
+
+CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp -o CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.s
+
 # Object files for target vision
 vision_OBJECTS = \
-"CMakeFiles/vision.dir/src/main.cpp.o"
+"CMakeFiles/vision.dir/src/main.cpp.o" \
+"CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o" \
+"CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o"
 
 # External object files for target vision
 vision_EXTERNAL_OBJECTS =
 
 vision: CMakeFiles/vision.dir/src/main.cpp.o
+vision: CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o
+vision: CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o
 vision: CMakeFiles/vision.dir/build.make
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_stitching.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_alphamat.so.4.5.1
@@ -131,7 +161,6 @@ vision: /usr/lib/arm-linux-gnueabihf/libopencv_videostab.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_viz.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_xobjdetect.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_xphoto.so.4.5.1
-vision: PiCameraDetection/libClient.a
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_highgui.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_datasets.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_plot.so.4.5.1
@@ -152,7 +181,7 @@ vision: /usr/lib/arm-linux-gnueabihf/libopencv_photo.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_imgproc.so.4.5.1
 vision: /usr/lib/arm-linux-gnueabihf/libopencv_core.so.4.5.1
 vision: CMakeFiles/vision.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable vision"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable vision"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/vision.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

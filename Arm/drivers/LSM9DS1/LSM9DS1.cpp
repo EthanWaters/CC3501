@@ -5,7 +5,7 @@
 
 LSM9DS1::LSM9DS1() {}
 
-void LSM9DS1::initialise() {
+void LSM9DS1::LSM9DS1() {
     // Initialize SPI
     spi_init(spiPort, 1000000); // Initialize SPI at 1 MHz
     gpio_set_function(PIN_SCK, GPIO_FUNC_SPI);

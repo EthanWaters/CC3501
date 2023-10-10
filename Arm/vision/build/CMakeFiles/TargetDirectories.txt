@@ -1,9 +1,3 @@
 /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles/rebuild_cache.dir
 /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles/edit_cache.dir
 /home/esl/Documents/CC3501/Arm/vision/build/CMakeFiles/vision.dir
-/home/esl/Documents/CC3501/Arm/vision/build/Client/CMakeFiles/rebuild_cache.dir
-/home/esl/Documents/CC3501/Arm/vision/build/Client/CMakeFiles/edit_cache.dir
-/home/esl/Documents/CC3501/Arm/vision/build/Client/CMakeFiles/PiCameraDetectionLib.dir
-/home/esl/Documents/CC3501/Arm/vision/build/PiCameraDetection/CMakeFiles/rebuild_cache.dir
-/home/esl/Documents/CC3501/Arm/vision/build/PiCameraDetection/CMakeFiles/edit_cache.dir
-/home/esl/Documents/CC3501/Arm/vision/build/PiCameraDetection/CMakeFiles/Client.dir

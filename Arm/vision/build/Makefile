@@ -142,31 +142,59 @@ vision/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/build
 .PHONY : vision/fast
 
-#=============================================================================
-# Target rules for targets named PiCameraDetectionLib
+home/esl/Documents/CC3501/Arm/drivers/Client/Client.o: home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o
 
-# Build rule for target.
-PiCameraDetectionLib: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 PiCameraDetectionLib
-.PHONY : PiCameraDetectionLib
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/Client/Client.o
 
-# fast build rule for target.
-PiCameraDetectionLib/fast:
-	$(MAKE) $(MAKESILENT) -f Client/CMakeFiles/PiCameraDetectionLib.dir/build.make Client/CMakeFiles/PiCameraDetectionLib.dir/build
-.PHONY : PiCameraDetectionLib/fast
+# target to build an object file
+home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.o
 
-#=============================================================================
-# Target rules for targets named Client
+home/esl/Documents/CC3501/Arm/drivers/Client/Client.i: home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.i
 
-# Build rule for target.
-Client: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Client
-.PHONY : Client
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/Client/Client.i
 
-# fast build rule for target.
-Client/fast:
-	$(MAKE) $(MAKESILENT) -f PiCameraDetection/CMakeFiles/Client.dir/build.make PiCameraDetection/CMakeFiles/Client.dir/build
-.PHONY : Client/fast
+# target to preprocess a source file
+home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.i
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.i
+
+home/esl/Documents/CC3501/Arm/drivers/Client/Client.s: home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.s
+
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/Client/Client.s
+
+# target to generate assembly for a file
+home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.s
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/Client/Client.cpp.s
+
+home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.o: home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o
+
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.o
+
+# target to build an object file
+home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.o
+
+home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.i: home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.i
+
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.i
+
+# target to preprocess a source file
+home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.i
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.i
+
+home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.s: home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.s
+
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.s
+
+# target to generate assembly for a file
+home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/vision.dir/build.make CMakeFiles/vision.dir/home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.s
+.PHONY : home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.cpp.s
 
 src/main.o: src/main.cpp.o
 
@@ -203,9 +231,13 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Client"
-	@echo "... PiCameraDetectionLib"
 	@echo "... vision"
+	@echo "... home/esl/Documents/CC3501/Arm/drivers/Client/Client.o"
+	@echo "... home/esl/Documents/CC3501/Arm/drivers/Client/Client.i"
+	@echo "... home/esl/Documents/CC3501/Arm/drivers/Client/Client.s"
+	@echo "... home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.o"
+	@echo "... home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.i"
+	@echo "... home/esl/Documents/CC3501/Arm/drivers/PiCameraDetection/PiCameraDetection.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
