@@ -16,11 +16,13 @@ int main(int argc, char* argv[]) {
     
     const char* defaultIp = "192.168.0.252";
     const char* defaultPort = "54321";
-
+    
     const char* ip = (argc > 1) ? argv[1] : defaultIp;
     const char* port = (argc > 2) ? argv[2] : defaultPort;
 
-    
+    std::cout << ip << std::endl;
+    std::cout << port << std::endl;
+    /*
     // Create instances of PiCameraDetection to find arm segments
     PiCameraDetection detector_1;
     PiCameraDetection detector_2;
@@ -31,12 +33,13 @@ int main(int argc, char* argv[]) {
     detector_2.init_capture();
     detector_3.init_capture();
     detector_4.init_capture();
+    */
     
     // intialise client class to send data over socket
     Client client(ip, port);
     client.init();
        
-     while (true) {
+/* while (true) {
         std::string command;
         std::cin >> command;
 
@@ -141,7 +144,7 @@ int main(int argc, char* argv[]) {
        
 	}
     
-
+    */
     
     return 0;
 }

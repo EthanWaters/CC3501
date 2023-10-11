@@ -47,4 +47,5 @@ class Client {
 		const char* _port;
 		int socket_fd;
 		int s_remote;
+		int s_local;
 };
