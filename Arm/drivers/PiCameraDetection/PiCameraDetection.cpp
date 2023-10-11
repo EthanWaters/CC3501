@@ -1,17 +1,16 @@
 #include <PiCameraDetection.h>
 
 
-PiCameraDetection::PiCameraDetection()
+PiCameraDetection::PiCameraDetection() : window_capture_name("Camera"),
+      window_detection_name("Camera_Threshold"),
+      max_operator(4),
+      max_elem(2),
+      max_kernel_size(21),
+      max_thresh(255),
+      max_value_H(360 / 2),
+      max_value(255)
+
 {   
-	PiCameraDetection* current_instance = this;
-	static const String window_capture_name = "Camera";
-	static const String window_detection_name = "Camera_Threshold";
-	static const int max_operator = 4;
-	static const int max_elem = 2;
-	static const int max_kernel_size = 21;
-	static const int max_thresh = 255;
-	static const int max_value_H = 360/2;
-	static const int max_value = 255;
 	int morph_elem;
 	int morph_size;
 	int morph_operator;
@@ -24,9 +23,6 @@ PiCameraDetection::PiCameraDetection()
 	cv::Mat frame, frame_HSV, frame_threshold, canny_output;
 	vector<vector<Point>> contours;
 	cv::VideoCapture cap;
-	
-	
-	
 }	
 
 
@@ -57,6 +53,15 @@ void PiCameraDetection::init_window(){
     cv::namedWindow(window_capture_name, cv::WINDOW_AUTOSIZE);
     cv::namedWindow(window_detection_name, cv::WINDOW_AUTOSIZE);
     
+    //auto on_low_H_thresh_trackbar_adapter = cv::adapt(
+    //[](int pos, void* data) {
+      //PiCameraDetection* current_instance = (PiCameraDetection*)data;
+
+      //current_instance->low_H = min(current_instance->high_H-1, current_instance->low_H);
+      //setTrackbarPos("Low H", window_detection_name, current_instance->low_H);
+    //},
+    //this);
+    
      // Trackbars to set thresholds for HSV values
      createTrackbar("Low H", window_detection_name, &low_H, max_value_H, on_low_H_thresh_trackbar, this);
      createTrackbar("High H", window_detection_name, &high_H, max_value_H, on_high_H_thresh_trackbar, this);
@@ -72,9 +77,9 @@ void PiCameraDetection::init_window(){
      createTrackbar("High B", window_detection_name, &high_V, max_value, on_high_B_thresh_trackbar, this);
     
     //Trackbars for Morphology options 
-     createTrackbar("Operator:\n 0: Opening - 1: Closing \n 2: Gradient - 3: Top Hat \n 4: Black Hat", window_capture_name, &morph_operator, max_operator, on_morph_operator);
-     createTrackbar( "Element:\n 0: Rect - 1: Cross - 2: Ellipse", window_capture_name, &morph_elem, max_elem, on_morph_elem);
-     createTrackbar( "Kernel size:\n 2n +1", window_capture_name, &morph_size, max_kernel_size, on_morph_size );
+     createTrackbar("Operator:\n 0: Opening - 1: Closing \n 2: Gradient - 3: Top Hat \n 4: Black Hat", window_capture_name, &morph_operator, max_operator, on_morph_operator, this);
+     createTrackbar( "Element:\n 0: Rect - 1: Cross - 2: Ellipse", window_capture_name, &morph_elem, max_elem, on_morph_elem, this);
+     createTrackbar( "Kernel size:\n 2n +1", window_capture_name, &morph_size, max_kernel_size, on_morph_size, this);
     
 }
 
@@ -189,110 +194,125 @@ void PiCameraDetection::close(){
 	cap.release();
 }
 
-
-void PiCameraDetection::on_low_H_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_low_H_thresh_trackbar(int, void* data)
 {
- current_instance->low_H = min(current_instance->high_H-1, current_instance->low_H);
- setTrackbarPos("Low H", window_detection_name, current_instance->low_H);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+    current_instance->low_H = min(current_instance->high_H-1, current_instance->low_H);
+    setTrackbarPos("Low H", current_instance->window_detection_name, current_instance->low_H);
 }
 
 
-void PiCameraDetection::on_high_H_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_high_H_thresh_trackbar(int, void* data)
 {
- current_instance->high_H = max(current_instance->high_H, current_instance->low_H+1);
- setTrackbarPos("High H", window_detection_name, current_instance->high_H);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+    current_instance->high_H = max(current_instance->high_H, current_instance->low_H+1);
+    setTrackbarPos("High H", current_instance->window_detection_name, current_instance->high_H);
 }
 
 
-void PiCameraDetection::on_low_S_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_low_S_thresh_trackbar(int, void* data)
 {
- low_S = min(high_S-1, low_S);
- setTrackbarPos("Low S", window_detection_name, low_S);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->low_S = min(current_instance->high_S-1, current_instance->low_S);
+ setTrackbarPos("Low S", current_instance->window_detection_name, current_instance->low_S);
 }
 
 
-void PiCameraDetection::on_high_S_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_high_S_thresh_trackbar(int, void* data)
 {
- high_S = max(high_S, low_S+1);
- setTrackbarPos("High S", window_detection_name, high_S);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->high_S = max(current_instance->high_S, current_instance->low_S+1);
+ setTrackbarPos("High S", current_instance->window_detection_name, current_instance->high_S);
 }
 
 
-void PiCameraDetection::on_low_V_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_low_V_thresh_trackbar(int, void* data)
 {
- low_V = min(high_V-1, low_V);
- setTrackbarPos("Low V", window_detection_name, low_V);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->low_V = min(current_instance->high_V-1, current_instance->low_V);
+ setTrackbarPos("Low V", current_instance->window_detection_name, current_instance->low_V);
 }
 
 
-void PiCameraDetection::on_high_V_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_high_V_thresh_trackbar(int, void* data)
 {
- high_V = max(high_V, low_V+1);
- setTrackbarPos("High V", window_detection_name, high_V);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->high_V = max(current_instance->high_V, current_instance->low_V+1);
+ setTrackbarPos("High V", current_instance->window_detection_name, current_instance->high_V);
 }
 
 
-void PiCameraDetection::on_low_R_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_low_R_thresh_trackbar(int, void* data)
 {
- low_R = min(high_R-1, low_R);
- setTrackbarPos("Low R", window_detection_name, low_R);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->low_R = min(current_instance->high_R-1, current_instance->low_R);
+ setTrackbarPos("Low R", current_instance->window_detection_name, current_instance->low_R);
 }
 
 
-void PiCameraDetection::on_high_R_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_high_R_thresh_trackbar(int, void* data)
 {
- high_R = max(high_R, low_R+1);
- setTrackbarPos("High R", window_detection_name, high_R);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->high_R = max(current_instance->high_R, current_instance->low_R+1);
+ setTrackbarPos("High R", current_instance->window_detection_name, current_instance->high_R);
 }
 
 
-void PiCameraDetection::on_low_G_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_low_G_thresh_trackbar(int, void* data)
 {
- low_G = min(high_G-1, low_G);
- setTrackbarPos("Low S", window_detection_name, low_G);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->low_G = min(current_instance->high_G-1, current_instance->low_G);
+ setTrackbarPos("Low S", current_instance->window_detection_name, current_instance->low_G);
 }
 
 
-void PiCameraDetection::on_high_G_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_high_G_thresh_trackbar(int, void* data)
 {
- high_G = max(high_G, low_G+1);
- setTrackbarPos("High S", window_detection_name, high_G);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->high_G = max(current_instance->high_G, current_instance->low_G+1);
+ setTrackbarPos("High S", current_instance->window_detection_name, current_instance->high_G);
 }
 
 
-void PiCameraDetection::on_low_B_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_low_B_thresh_trackbar(int, void* data)
 {
- low_B = min(high_B-1, low_B);
- setTrackbarPos("Low V", window_detection_name, low_B);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->low_B = min(current_instance->high_B-1, current_instance->low_B);
+ setTrackbarPos("Low V", current_instance->window_detection_name, current_instance->low_B);
 }
 
 
-void PiCameraDetection::on_high_B_thresh_trackbar(PiCameraDetection* current_instance)
+void PiCameraDetection::on_high_B_thresh_trackbar(int, void* data)
 {
- high_B = max(high_B, low_B+1);
- setTrackbarPos("High V", window_detection_name, high_B);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+ current_instance->high_B = max(current_instance->high_B, current_instance->low_B+1);
+ setTrackbarPos("High V", current_instance->window_detection_name, current_instance->high_B);
+}
 
-
-void PiCameraDetection::on_morph_size(PiCameraDetection* current_instance)
+void PiCameraDetection::on_morph_size(int, void* data)
 {
-  setTrackbarPos("Kernel size:\n 2n +1", window_capture_name, morph_size);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+  setTrackbarPos("Kernel size:\n 2n +1", current_instance->window_capture_name, current_instance->morph_size);
 }
 
 
-void PiCameraDetection::on_morph_operator(PiCameraDetection* current_instance)
+void PiCameraDetection::on_morph_operator(int, void* data)
 {
-  setTrackbarPos("Operator:\n 0: Opening - 1: Closing \n 2: Gradient - 3: Top Hat \n 4: Black Hat", window_capture_name, morph_operator);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+  setTrackbarPos("Operator:\n 0: Opening - 1: Closing \n 2: Gradient - 3: Top Hat \n 4: Black Hat", current_instance->window_capture_name, current_instance->morph_operator);
 }
 
 
-void PiCameraDetection::on_morph_elem(PiCameraDetection* current_instance)
+void PiCameraDetection::on_morph_elem(int, void* data)
 {
-  setTrackbarPos("Element:\n 0: Rect - 1: Cross - 2: Ellipse", window_capture_name, morph_elem);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+  setTrackbarPos("Element:\n 0: Rect - 1: Cross - 2: Ellipse", current_instance->window_capture_name, current_instance->morph_elem);
 }
 
 
-void PiCameraDetection::on_thresh(PiCameraDetection* current_instance)
+void PiCameraDetection::on_thresh(int, void* data)
 {
-  setTrackbarPos("Thresh", window_capture_name, thresh);
+    PiCameraDetection* current_instance = static_cast<PiCameraDetection*>(data);
+  setTrackbarPos("Thresh", current_instance->window_capture_name, current_instance->thresh);
 }
 

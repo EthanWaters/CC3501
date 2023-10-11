@@ -96,18 +96,3 @@ void Client::clearPreviousLine() {
 }
 
 
-template <typename T>
-int Client::send(T& input){
-    const char* serialised_input = reinterpret_cast<const char*>(&input);
-    size_t input_size = sizeof(input);
-    s_remote = sendto(socket_fd, serialised_input, input_size, 0, remoteAddress->ai_addr, remoteAddress->ai_addrlen);
-    if (s_remote == -1) {
-        perror("Failed to send.");
-        close(socket_fd);
-        freeaddrinfo(localAddress);
-        freeaddrinfo(remoteAddress);
-        return 0;
-    }
-    return 1;
-}
-

@@ -12,7 +12,14 @@ float angle_differences[NUM_ANGLES];
 cv::Point2f centroids[NUM_OBJECTS];
 bool is_display;
 
-int main() {
+int main(int argc, char* argv[]) {
+    
+    const char* defaultIp = "192.168.0.252";
+    const char* defaultPort = "54321";
+
+    const char* ip = (argc > 1) ? argv[1] : defaultIp;
+    const char* port = (argc > 2) ? argv[2] : defaultPort;
+
     
     // Create instances of PiCameraDetection to find arm segments
     PiCameraDetection detector_1;
@@ -20,8 +27,13 @@ int main() {
     PiCameraDetection detector_3;
     PiCameraDetection detector_4;
     
+    detector_1.init_capture();
+    detector_2.init_capture();
+    detector_3.init_capture();
+    detector_4.init_capture();
+    
     // intialise client class to send data over socket
-    Client client("192.168.0.252", "54321");
+    Client client(ip, port);
     client.init();
        
      while (true) {
@@ -133,3 +145,59 @@ int main() {
     
     return 0;
 }
+
+
+
+float get_joint_angle(cv::Point2f centroid1, cv::Point2f centroid2, cv::Point2f centroid_ref){
+	
+	// scale values to be with reference to centroid_ref
+	
+	cv::Point2f vector1 = centroid1 - centroid_ref;
+    cv::Point2f vector2 = centroid2 - centroid_ref;
+
+    // Calculate the angle between the vectors using atan2
+    double angle1 = atan2(vector1.y, vector1.x);
+    double angle2 = atan2(vector2.y, vector2.x);
+
+    // Calculate the angle difference (angle2 - angle1)
+    float angleDifference = angle2 - angle1;
+
+    // Ensure the angle is within the range of -pi to pi
+    if (angleDifference > CV_PI) {
+        angleDifference -= 2 * CV_PI;
+    } else if (angleDifference <= -CV_PI) {
+        angleDifference += 2 * CV_PI;
+    }
+
+    return angleDifference;
+	
+}
+
+
+void get_arm_angles(float angles[], cv::Point2f centroids[], int arrayLength ){
+	//(EXAMPLE)
+	//Centroid 0: Shoulder 
+	//Centroid 1: Elbow 
+	//Centroid 2: Wrist
+	//Centroid 3: Knuckle 
+	
+	for(int i=0; i<arrayLength; i++){
+		angles[i] = get_joint_angle(centroids[i], centroids[i+2], centroids[i+1]);
+	}
+	
+}
+
+
+void get_angle_differences(float angle_differences[], float angles[], float previous_angles[], int arrayLength){
+	//(EXAMPLE)
+	//Angle 0: Elbow 
+	//Angle 1: Wrist
+	
+	for(int i=0; i<arrayLength; i++){
+		angle_differences[i] = previous_angles[i] - angles[i];
+	}
+}
+
+
+
+
