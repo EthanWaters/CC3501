@@ -1,51 +1,42 @@
 #include <PiCameraDetection.h>
 
 
-PiCameraDetection::PiCameraDetection() : window_capture_name("Camera"),
+PiCameraDetection::PiCameraDetection(std::shared_ptr<cv::VideoCapture> cap) : window_capture_name("Camera"),
       window_detection_name("Camera_Threshold"),
       max_operator(4),
       max_elem(2),
       max_kernel_size(21),
       max_thresh(255),
       max_value_H(360 / 2),
-      max_value(255)
-
+      max_value(255),
+      morph_elem(),  // Initialize other member variables here
+	morph_size(),
+	morph_operator(),
+	low_H(),
+	low_S(),
+	low_V(),
+	high_R(),
+	high_G(),
+	high_B(),
+	low_R(),
+	low_G(),
+	low_B(),
+	high_H(max_value_H),
+	high_S(max_value),
+	high_V(max_value),
+	color(),
+	color2(),
+	mc(),
+	frame(),
+	frame_HSV(),
+	frame_threshold(),
+	canny_output(),
+	contours()
+	
 {   
-	int morph_elem;
-	int morph_size;
-	int morph_operator;
-	int low_H, low_S, low_V;
-	int high_R, high_G, high_B;
-	int low_R, low_G, low_B;
-	int high_H, high_S, high_V;
-	Scalar color;
-	Scalar color2;
-	cv::Mat frame, frame_HSV, frame_threshold, canny_output;
-	vector<vector<Point>> contours;
-	cv::VideoCapture cap;
+	this-> cap = cap;
+  
 }	
-
-
-
-int PiCameraDetection::init_capture(){
-    
-    // Open the video camera.
-    std::string pipeline = "libcamerasrc"
-        " ! video/x-raw, width=800, height=600" // camera needs to capture at a higher resolution
-        " ! videoconvert"
-        " ! videoscale"
-        " ! video/x-raw, width=400, height=300" // can downsample the image after capturing
-        " ! videoflip method=rotate-180" // remove this line if the image is upside-down
-        " ! appsink drop=true max_buffers=2";
-    cv::VideoCapture cap(pipeline, cv::CAP_GSTREAMER);
-    if(!cap.isOpened()) {
-        printf("Could not open camera.\n");
-        return 1;
-    }
-    
-    return 0;
-    
-}
 
 
 void PiCameraDetection::init_window(){
@@ -85,7 +76,7 @@ void PiCameraDetection::init_window(){
 
 
 int PiCameraDetection::detect_coordinates(){	
-	if (!cap.read(frame)) {
+	if (!cap->read(frame)) {
             printf("Could not read a frame.\n");
             return 1;
         }
@@ -112,7 +103,7 @@ int PiCameraDetection::detect_coordinates(){
 
 
 void PiCameraDetection::populate_window(){	
-	vector<vector<Point> > contours;
+	
 	findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
 	for( size_t i = 0; i< contours.size(); i++ ){
 		drawContours( frame, contours, (int)i, color, 2 );
@@ -190,9 +181,69 @@ cv::Point2f PiCameraDetection::get_centroid() {
 }
     
     
-void PiCameraDetection::close(){	
-	cap.release();
+std::string  PiCameraDetection::get_centroid_s() {
+    std::string pointString = "[" + std::to_string(mc.x) + ", " + std::to_string(mc.y) + "]";
+    return pointString;
 }
+    
+    
+void PiCameraDetection::close(){	
+	cap->release();
+}
+
+
+
+
+float get_joint_angle(cv::Point2f centroid1, cv::Point2f centroid2, cv::Point2f centroid_ref){
+	
+	// scale values to be with reference to centroid_ref
+	
+	cv::Point2f vector1 = centroid1 - centroid_ref;
+    cv::Point2f vector2 = centroid2 - centroid_ref;
+
+    // Calculate the angle between the vectors using atan2
+    double angle1 = atan2(vector1.y, vector1.x);
+    double angle2 = atan2(vector2.y, vector2.x);
+
+    // Calculate the angle difference (angle2 - angle1)
+    float angleDifference = angle2 - angle1;
+
+    // Ensure the angle is within the range of -pi to pi
+    if (angleDifference > CV_PI) {
+        angleDifference -= 2 * CV_PI;
+    } else if (angleDifference <= -CV_PI) {
+        angleDifference += 2 * CV_PI;
+    }
+
+    return angleDifference;
+	
+}
+
+
+void get_arm_angles(float angles[], cv::Point2f centroids[], int arrayLength ){
+	//(EXAMPLE)
+	//Centroid 0: Shoulder 
+	//Centroid 1: Elbow 
+	//Centroid 2: Wrist
+	//Centroid 3: Knuckle 
+	
+	for(int i=0; i<arrayLength; i++){
+		angles[i] = get_joint_angle(centroids[i], centroids[i+2], centroids[i+1]);
+	}
+	
+}
+
+
+void get_angle_differences(float angle_differences[], float angles[], float previous_angles[], int arrayLength){
+	//(EXAMPLE)
+	//Angle 0: Elbow 
+	//Angle 1: Wrist
+	
+	for(int i=0; i<arrayLength; i++){
+		angle_differences[i] = previous_angles[i] - angles[i];
+	}
+}
+
 
 void PiCameraDetection::on_low_H_thresh_trackbar(int, void* data)
 {

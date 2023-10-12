@@ -18,11 +18,12 @@ using namespace cv;
 
 class PiCameraDetection {
 	public:
-		PiCameraDetection();	
+		PiCameraDetection(std::shared_ptr<cv::VideoCapture> cap);	
 		void init_window();
 		void populate_window();
 		int detect_coordinates();
 		cv::Point2f get_centroid();
+		std::string get_centroid_s();
 		int load_calibration(const std::string& filename);
 		int save_calibration(const std::string& filename);
 		void close();
@@ -65,9 +66,10 @@ class PiCameraDetection {
 		int high_H, high_S, high_V;
 		Scalar color;
 		Scalar color2;
-		cv::Mat frame, frame_HSV, frame_threshold, canny_output;
+		cv::Mat frame_HSV, frame_threshold, canny_output;
 		vector<vector<Point>> contours;
-		cv::VideoCapture cap;
+		cv::Mat frame;
+		std::shared_ptr<cv::VideoCapture> cap;
 		cv::Point2f mc;
 		
 };
