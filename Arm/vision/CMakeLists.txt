@@ -12,13 +12,16 @@ message("ProjectDir is ${ProjectDir}")
 include_directories(${ProjectDir}/drivers/PiCameraDetection)
 include_directories(${ProjectDir}/drivers/Client)
 
+
 add_executable(vision 
     src/main.cpp
     ${ProjectDir}/drivers/Client/Client.cpp
     ${ProjectDir}/drivers/PiCameraDetection/PiCameraDetection.cpp
+    
 )
 
-target_link_libraries(vision ${OpenCV_LIBS})
+target_link_libraries(vision ${OpenCV_LIBS} pthread)
 
 
-
+#${ProjectDir}/drivers/Helper/Helper.cpp
+#include_directories(${ProjectDir}/drivers/Helper)
