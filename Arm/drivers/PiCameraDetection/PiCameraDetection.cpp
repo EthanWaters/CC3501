@@ -12,20 +12,20 @@ PiCameraDetection::PiCameraDetection(std::shared_ptr<cv::VideoCapture> cap) : wi
       morph_elem(),  // Initialize other member variables here
 	morph_size(),
 	morph_operator(),
-	low_H(),
-	low_S(),
-	low_V(),
+	low_H(0),
+	low_S(0),
+	low_V(0),
 	high_R(max_value),
 	high_G(max_value),
 	high_B(max_value),
-	low_R(),
-	low_G(),
-	low_B(),
+	low_R(0),
+	low_G(0),
+	low_B(0),
 	high_H(max_value_H),
 	high_S(max_value),
 	high_V(max_value),
-	color(),
-	color2(),
+	color(Scalar( 256, 256, 256 )),
+	color2(Scalar( 0, 256, 0 )),
 	mc(),
 	frame(),
 	frame_HSV(),
@@ -96,11 +96,12 @@ int PiCameraDetection::detect_coordinates(){
 
 vector<vector<Point>> PiCameraDetection::get_contour(){	
     findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
-    return contours
+    return contours;
 }
 
 
-void PiCameraDetection::populate_window(){	
+
+void PiCameraDetection::populate_window_single(){	
 	
 	findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
 	for( size_t i = 0; i< contours.size(); i++ ){
@@ -117,6 +118,25 @@ void PiCameraDetection::populate_window(){
 }
 
 
+
+void PiCameraDetection::populate_window(std::vector<std::vector<cv::Point>> contours[], cv::Point2f centroids[], int length){	
+	for( size_t i = 0; i < length; i++){
+	    circle(frame, centroids[i], 4, color2, -1, 8, 0 );
+	    size_t size = contours[i].size();
+	    for( size_t j = 0; j< size; j++){
+		drawContours(frame, contours[i], (int)j, color, 2 );
+	    }
+	 }
+	
+	//show frame
+	
+	cv::imshow(window_capture_name, frame);
+	cv::imshow(window_detection_name, frame_threshold);
+	cv::waitKey(1);	
+	
+}
+
+
 // Function to save all thresholding variables to a YAML file
 int PiCameraDetection::save_calibration(const std::string& filename) {
     cv::FileStorage fs(filename, cv::FileStorage::WRITE);
@@ -124,7 +144,9 @@ int PiCameraDetection::save_calibration(const std::string& filename) {
         std::cerr << "Failed to open file for writing: " << filename << std::endl;
         return 1;
     }
-
+    fs << "morph_elem" << morph_elem;
+    fs << "morph_size" << morph_size;
+    fs << "morph_operator" << morph_operator;
     fs << "low_H" << low_H;
     fs << "high_H" << high_H;
     fs << "low_S" << low_S;
@@ -152,14 +174,16 @@ int PiCameraDetection::load_calibration(const std::string& filename) {
         std::cerr << "Failed to open file for reading: " << filename << std::endl;
         return 1;
     }
-
+    fs["morph_elem"] << morph_elem;
+    fs["morph_size"] << morph_size;
+    fs["morph_operator"] << morph_operator;
     fs["low_H"] >> low_H;
     fs["high_H"] >> high_H;
     fs["low_S"] >> low_S;
     fs["high_S"] >> high_S;
     fs["low_V"] >> low_V;
     fs["high_V"] >> high_V;
-
+    
     // Load RGB thresholding variables
     fs["low_R"] >> low_R;
     fs["high_R"] >> high_R;
@@ -167,7 +191,7 @@ int PiCameraDetection::load_calibration(const std::string& filename) {
     fs["high_G"] >> high_G;
     fs["low_B"] >> low_B;
     fs["high_B"] >> high_B;
-
+    
     fs.release();
     std::cout << "Threshold variables loaded from " << filename << std::endl;
     return 0;
@@ -196,7 +220,7 @@ float get_joint_angle(cv::Point2f centroid1, cv::Point2f centroid2, cv::Point2f 
 	
 	// scale values to be with reference to centroid_ref
 	
-	cv::Point2f vector1 = centroid1 - centroid_ref;
+    cv::Point2f vector1 = centroid1 - centroid_ref;
     cv::Point2f vector2 = centroid2 - centroid_ref;
 
     // Calculate the angle between the vectors using atan2

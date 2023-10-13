@@ -18,6 +18,7 @@ std::atomic<bool> shouldExit(false);
 std::string command;
 std::string parameter;
 std::mutex commandMutex;
+std::vector<std::vector<cv::Point>> allContours[NUM_OBJECTS];
 
 void inputThread() {
     while (!shouldExit) {
@@ -55,7 +56,7 @@ std::string array_to_string(const T& data) {
 
 int main(int argc, char* argv[]) {
     
-    const char* defaultIp = "192.168.0.185";
+    const char* defaultIp = "192.168.0.128";
     const char* defaultPort = "54321";
     
     const char* ip = (argc > 1) ? argv[1] : defaultIp;
@@ -98,6 +99,7 @@ int main(int argc, char* argv[]) {
             is_display = true;
             
          } else if (command == "load") {
+             
             if(parameter.find('1') != std::string::npos){
                 detector_1.load_calibration(parameter);
             } else if (parameter.find('2') != std::string::npos){
@@ -110,17 +112,9 @@ int main(int argc, char* argv[]) {
             
             std::cout << "Threshold loaded " << parameter << std::endl;
         } else if (command == "save") {
-            if(parameter.find('1') != std::string::npos){
-                detector_1.save_calibration(parameter);
-            } else if (parameter.find('2') != std::string::npos){
-                detector_2.save_calibration(parameter);
-            } else if (parameter.find('3') != std::string::npos){
-                detector_3.save_calibration(parameter);
-            } else if (parameter.find('4') != std::string::npos){
-                detector_4.save_calibration(parameter);
-            } 
-            
+            detector_1.save_calibration(parameter);
             std::cout << "Threshold saved " << parameter << std::endl;
+        
         } else if (command == "start") {
           break;
         }
@@ -132,9 +126,8 @@ int main(int argc, char* argv[]) {
         detector_3.detect_coordinates();
         detector_4.detect_coordinates();
         
-        data_send = detector_1.get_centroid_s();
-        std::cout << "=========" << std::endl;
-        data_send = detector_2.get_centroid_s();
+        data_send = detector_1.get_centroid_s() + detector_2.get_centroid_s() + detector_3.get_centroid_s() + detector_4.get_centroid_s();
+        
         // Add centroids to the vector
         centroids[0] = detector_1.get_centroid();
         centroids[1] = detector_2.get_centroid();
@@ -146,7 +139,12 @@ int main(int argc, char* argv[]) {
         client.send(data_send);
            
         if(is_display == true){
-            detector_1.populate_window();
+              
+            allContours[0] = detector_1.get_contour();
+            allContours[1] = detector_2.get_contour();
+            allContours[2] = detector_3.get_contour();
+            allContours[3] = detector_4.get_contour();
+            detector_1.populate_window(allContours, centroids, NUM_OBJECTS);
         }
     }
     
@@ -164,34 +162,29 @@ int main(int argc, char* argv[]) {
                 is_display = false;
             
             } else if (command == "load") {
+                
                 if(parameter.find('1') != std::string::npos){
                     detector_1.load_calibration(parameter);
                 } else if (parameter.find('2') != std::string::npos){
+                    std::cout << "Threshold loaded " << parameter << "detector 2" << std::endl;
                     detector_2.load_calibration(parameter);
                 } else if (parameter.find('3') != std::string::npos){
+                    std::cout << "Threshold loaded " << parameter << "detector 3" << std::endl;
                     detector_3.load_calibration(parameter);
                 } else if (parameter.find('4') != std::string::npos){
+                    std::cout << "Threshold loaded " << parameter << "detector 4" << std::endl;
                     detector_4.load_calibration(parameter);
                 } 
                 
                 std::cout << "Threshold loaded " << parameter << std::endl;
              } else if (command == "save") {
-                if(parameter.find('1') != std::string::npos){
-                    detector_1.save_calibration(parameter);
-                } else if (parameter.find('2') != std::string::npos){
-                    detector_2.save_calibration(parameter);
-                } else if (parameter.find('3') != std::string::npos){
-                    detector_3.save_calibration(parameter);
-                } else if (parameter.find('4') != std::string::npos){
-                    detector_4.save_calibration(parameter);
-                } 
-                
+                detector_1.save_calibration(parameter);
                 std::cout << "Threshold saved " << parameter << std::endl;
                 
             }   
         }
         command.clear();
-           
+        parameter.clear();
        
          // Start object detection threads
         detector_1.detect_coordinates();
@@ -211,10 +204,13 @@ int main(int argc, char* argv[]) {
         client.send(data_send);
         
         if(is_display == true){
-            detector_1.populate_window();
-            detector_2.populate_window();
-            detector_3.populate_window();
-            detector_4.populate_window();
+             
+            allContours[0] = detector_1.get_contour();
+            allContours[1] = detector_2.get_contour();
+            allContours[2] = detector_3.get_contour();
+            allContours[3] = detector_4.get_contour();
+            detector_1.populate_window(allContours, centroids, NUM_OBJECTS);
+            
         }
     }
     

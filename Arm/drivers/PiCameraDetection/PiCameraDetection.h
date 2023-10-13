@@ -20,7 +20,8 @@ class PiCameraDetection {
 	public:
 		PiCameraDetection(std::shared_ptr<cv::VideoCapture> cap);	
 		void init_window();
-		void populate_window();
+		void populate_window(std::vector<std::vector<cv::Point>> contours[], cv::Point2f centroids[], int legnth);
+		void populate_window_single();
 		int detect_coordinates();
 		cv::Point2f get_centroid();
 		std::string get_centroid_s();
