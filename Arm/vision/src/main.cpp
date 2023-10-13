@@ -100,11 +100,11 @@ int main(int argc, char* argv[]) {
          } else if (command == "load") {
             if(parameter.find('1') != std::string::npos){
                 detector_1.load_calibration(parameter);
-            } else if parameter.find('2') != std::string::npos){
+            } else if (parameter.find('2') != std::string::npos){
                 detector_2.load_calibration(parameter);
-            } else if parameter.find('3') != std::string::npos){
+            } else if (parameter.find('3') != std::string::npos){
                 detector_3.load_calibration(parameter);
-            } else if parameter.find('4') != std::string::npos){
+            } else if (parameter.find('4') != std::string::npos){
                 detector_4.load_calibration(parameter);
             } 
             
@@ -112,17 +112,17 @@ int main(int argc, char* argv[]) {
         } else if (command == "save") {
             if(parameter.find('1') != std::string::npos){
                 detector_1.save_calibration(parameter);
-            } else if parameter.find('2') != std::string::npos){
+            } else if (parameter.find('2') != std::string::npos){
                 detector_2.save_calibration(parameter);
-            } else if parameter.find('3') != std::string::npos){
+            } else if (parameter.find('3') != std::string::npos){
                 detector_3.save_calibration(parameter);
-            } else if parameter.find('4') != std::string::npos){
+            } else if (parameter.find('4') != std::string::npos){
                 detector_4.save_calibration(parameter);
             } 
             
             std::cout << "Threshold saved " << parameter << std::endl;
-        } else if command == "start") {
-          break   
+        } else if (command == "start") {
+          break;
         }
         command.clear();
         
@@ -132,6 +132,9 @@ int main(int argc, char* argv[]) {
         detector_3.detect_coordinates();
         detector_4.detect_coordinates();
         
+        data_send = detector_1.get_centroid_s();
+        std::cout << "=========" << std::endl;
+        data_send = detector_2.get_centroid_s();
         // Add centroids to the vector
         centroids[0] = detector_1.get_centroid();
         centroids[1] = detector_2.get_centroid();
@@ -139,14 +142,11 @@ int main(int argc, char* argv[]) {
         centroids[3] = detector_4.get_centroid();
         
         get_arm_angles(angles, centroids, NUM_ANGLES);
-        data_send = array_to_string(angles);
+        //data_send = array_to_string(angles);
         client.send(data_send);
            
         if(is_display == true){
             detector_1.populate_window();
-            detector_2.populate_window();
-            detector_3.populate_window();
-            detector_4.populate_window();
         }
     }
     
@@ -160,17 +160,17 @@ int main(int argc, char* argv[]) {
         } 
         
         if (!command.empty()){
-             (command == "close_window") {  
+            if (command == "close_window") {  
                 is_display = false;
             
             } else if (command == "load") {
                 if(parameter.find('1') != std::string::npos){
                     detector_1.load_calibration(parameter);
-                } else if parameter.find('2') != std::string::npos){
+                } else if (parameter.find('2') != std::string::npos){
                     detector_2.load_calibration(parameter);
-                } else if parameter.find('3') != std::string::npos){
+                } else if (parameter.find('3') != std::string::npos){
                     detector_3.load_calibration(parameter);
-                } else if parameter.find('4') != std::string::npos){
+                } else if (parameter.find('4') != std::string::npos){
                     detector_4.load_calibration(parameter);
                 } 
                 
@@ -178,11 +178,11 @@ int main(int argc, char* argv[]) {
              } else if (command == "save") {
                 if(parameter.find('1') != std::string::npos){
                     detector_1.save_calibration(parameter);
-                } else if parameter.find('2') != std::string::npos){
+                } else if (parameter.find('2') != std::string::npos){
                     detector_2.save_calibration(parameter);
-                } else if parameter.find('3') != std::string::npos){
+                } else if (parameter.find('3') != std::string::npos){
                     detector_3.save_calibration(parameter);
-                } else if parameter.find('4') != std::string::npos){
+                } else if (parameter.find('4') != std::string::npos){
                     detector_4.save_calibration(parameter);
                 } 
                 

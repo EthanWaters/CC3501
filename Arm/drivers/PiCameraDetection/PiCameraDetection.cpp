@@ -15,9 +15,9 @@ PiCameraDetection::PiCameraDetection(std::shared_ptr<cv::VideoCapture> cap) : wi
 	low_H(),
 	low_S(),
 	low_V(),
-	high_R(),
-	high_G(),
-	high_B(),
+	high_R(max_value),
+	high_G(max_value),
+	high_B(max_value),
 	low_R(),
 	low_G(),
 	low_B(),
@@ -44,15 +44,6 @@ void PiCameraDetection::init_window(){
     cv::namedWindow(window_capture_name, cv::WINDOW_AUTOSIZE);
     cv::namedWindow(window_detection_name, cv::WINDOW_AUTOSIZE);
     
-    //auto on_low_H_thresh_trackbar_adapter = cv::adapt(
-    //[](int pos, void* data) {
-      //PiCameraDetection* current_instance = (PiCameraDetection*)data;
-
-      //current_instance->low_H = min(current_instance->high_H-1, current_instance->low_H);
-      //setTrackbarPos("Low H", window_detection_name, current_instance->low_H);
-    //},
-    //this);
-    
      // Trackbars to set thresholds for HSV values
      createTrackbar("Low H", window_detection_name, &low_H, max_value_H, on_low_H_thresh_trackbar, this);
      createTrackbar("High H", window_detection_name, &high_H, max_value_H, on_high_H_thresh_trackbar, this);
@@ -60,13 +51,13 @@ void PiCameraDetection::init_window(){
      createTrackbar("High S", window_detection_name, &high_S, max_value, on_high_S_thresh_trackbar, this);
      createTrackbar("Low V", window_detection_name, &low_V, max_value, on_low_V_thresh_trackbar, this);
      createTrackbar("High V", window_detection_name, &high_V, max_value, on_high_V_thresh_trackbar, this);
-     createTrackbar("Low R", window_detection_name, &low_R, max_value, on_low_R_thresh_trackbar, this);
-     createTrackbar("High R", window_detection_name, &high_R, max_value, on_high_R_thresh_trackbar, this);
-     createTrackbar("Low G", window_detection_name, &low_G, max_value, on_low_G_thresh_trackbar, this);
-     createTrackbar("High G", window_detection_name, &high_G, max_value, on_high_G_thresh_trackbar, this);
-     createTrackbar("Low B", window_detection_name, &low_B, max_value, on_low_B_thresh_trackbar, this);
-     createTrackbar("High B", window_detection_name, &high_V, max_value, on_high_B_thresh_trackbar, this);
-    
+     //createTrackbar("Low R", window_detection_name, &low_R, max_value, on_low_R_thresh_trackbar, this);
+     //createTrackbar("High R", window_detection_name, &high_R, max_value, on_high_R_thresh_trackbar, this);
+     //createTrackbar("Low G", window_detection_name, &low_G, max_value, on_low_G_thresh_trackbar, this);
+     //createTrackbar("High G", window_detection_name, &high_G, max_value, on_high_G_thresh_trackbar, this);
+     //createTrackbar("Low B", window_detection_name, &low_B, max_value, on_low_B_thresh_trackbar, this);
+     //createTrackbar("High B", window_detection_name, &high_V, max_value, on_high_B_thresh_trackbar, this);
+
     //Trackbars for Morphology options 
      createTrackbar("Operator:\n 0: Opening - 1: Closing \n 2: Gradient - 3: Top Hat \n 4: Black Hat", window_capture_name, &morph_operator, max_operator, on_morph_operator, this);
      createTrackbar( "Element:\n 0: Rect - 1: Cross - 2: Ellipse", window_capture_name, &morph_elem, max_elem, on_morph_elem, this);
@@ -84,9 +75,9 @@ int PiCameraDetection::detect_coordinates(){
 	
 	// Convert from BGR to HSV colorspace
 	cvtColor(frame, frame_HSV, COLOR_BGR2HSV);
-	inRange(frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), HSV_threshold);
-	inRange(frame, Scalar(low_R, low_G, low_B), Scalar(high_R, high_G, high_B), RGB_threshold);
-	cv::bitwise_and(HSV_threshold, RGB_threshold, frame_threshold);
+	inRange(frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), frame_threshold); //HSV_threshold
+	//inRange(frame, Scalar(low_R, low_G, low_B), Scalar(high_R, high_G, high_B), RGB_threshold);
+	//cv::bitwise_and(HSV_threshold, RGB_threshold, frame_threshold);
 	
 	// Perform morphology
 	int operation = morph_operator + 2;
@@ -102,11 +93,18 @@ int PiCameraDetection::detect_coordinates(){
 }	
 
 
+
+vector<vector<Point>> PiCameraDetection::get_contour(){	
+    findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
+    return contours
+}
+
+
 void PiCameraDetection::populate_window(){	
 	
 	findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
 	for( size_t i = 0; i< contours.size(); i++ ){
-		drawContours( frame, contours, (int)i, color, 2 );
+		drawContours(frame, contours, (int)i, color, 2 );
 	 }
 	
 	//show frame

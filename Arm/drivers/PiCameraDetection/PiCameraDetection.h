@@ -28,7 +28,7 @@ class PiCameraDetection {
 		int save_calibration(const std::string& filename);
 		void close();
 		int init_capture();
-		
+		vector<vector<Point>> get_contour();
 		
 	
 	private:
