@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_CXX_STANDARD 20)
-project(rp2040_node)
+project(rp2040_master_node)
 set(COMPILE_DEFINITIONS -O2 -Wall)
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
@@ -14,13 +14,11 @@ set(ProjectDir /home/esl/Documents/CC3501/Arm)
 message("ProjectDir is ${ProjectDir}")
 
 include_directories(${ProjectDir}/drivers/mcp2515)
-include_directories(${ProjectDir}/drivers/LSM9DS1)
 
 
 add_executable(vision 
-    src/rp2040_node.cpp
+    src/rp2040_master_node.cpp
     ${ProjectDir}/drivers/mcp2515/mcp2515.cpp
-    ${ProjectDir}/drivers/LSM9DS1/LSM9DS1.cpp
     
 )
 
