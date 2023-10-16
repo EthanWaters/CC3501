@@ -20,13 +20,11 @@
 
 struct can_frame rx;
 struct can_frame tx;
-
 segment chest, forearm, bicep, hand;
-
 tx.can_dlc = PAYLOAD_SIZE;
 tx.can_id = MASTER_SEND;  // Set the CAN ID of the specific slave
-
 int16_t yaw, roll, pitch; 
+std::string arm_angles_s;
 
 int main() {
     stdio_init_all();
@@ -46,24 +44,24 @@ int main() {
         processSensorData(rx, hand);
 
         sendRequest(REQUEST_SLAVE2);
-        mcp2515.readMessage(rx);
         wait_for_data();
+        mcp2515.readMessage(rx);
         processSensorData(rx, forearm);
 
         sendRequest(REQUEST_SLAVE3);
-        mcp2515.readMessage(rx);
         wait_for_data();
+        mcp2515.readMessage(rx);
         processSensorData(rx, bicep);
 
         sendRequest(REQUEST_SLAVE4);
-        mcp2515.readMessage(rx);
         wait_for_data();
+        mcp2515.readMessage(rx);
         processSensorData(rx, chest)
 
 
         get_joint_angles(hand, forearm, bicep, chest, arm_angles)
-        array_to_string()
-        mcp2515.sendMessage(tx);
+        arm_angles_s = array_to_string(arm_angles)
+        
 
     }
 
