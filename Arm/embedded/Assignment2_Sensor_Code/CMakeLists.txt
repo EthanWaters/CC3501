@@ -41,8 +41,8 @@ if(CrossCompiling)
     target_sources(assignment2 
         PUBLIC
         src/main.cpp
-        src/LSM9DS1.h
-        src/LSM9DS1.cpp
+        src/drivers/LSM9DS1.h
+        src/drivers/LSM9DS1.cpp
         src/Sensor_Board.h
         src/drivers/MPU9250_driver.h
         src/drivers/MPU9250_driver.cpp
