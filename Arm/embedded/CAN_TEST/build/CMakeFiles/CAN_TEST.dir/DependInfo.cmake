@@ -59,13 +59,17 @@ set(CMAKE_TARGET_DEFINITIONS_ASM
   "PICO_NO_FLASH=0"
   "PICO_NO_HARDWARE=0"
   "PICO_ON_DEVICE=1"
+  "PICO_PROGRAM_NAME=\"CAN_TEST\""
+  "PICO_PROGRAM_VERSION_STRING=\"0.2\""
   "PICO_TARGET_NAME=\"CAN_TEST\""
   "PICO_USE_BLOCKED_RAM=0"
+  "PICO_XOSC_STARTUP_DELAY_MULTIPLIER=64"
   )
 
 # The include file search paths:
 set(CMAKE_ASM_TARGET_INCLUDE_PATH
   "C:/Users/elois/Documents/CC3501/Arm/drivers/mcp2515"
+  "C:/Users/elois/Documents/CC3501/Arm/embedded/CAN_TEST/src/CAN_TEST.cpp"
   "C:/pico/pico-sdk/src/common/pico_stdlib/include"
   "C:/pico/pico-sdk/src/rp2_common/hardware_gpio/include"
   "C:/pico/pico-sdk/src/common/pico_base/include"
@@ -105,6 +109,12 @@ set(CMAKE_ASM_TARGET_INCLUDE_PATH
   "C:/pico/pico-sdk/src/rp2_common/pico_mem_ops/include"
   "C:/pico/pico-sdk/src/rp2_common/boot_stage2/include"
   "C:/pico/pico-sdk/src/rp2_common/hardware_spi/include"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_i2c/include"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_dma/include"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_pio/include"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_interp/include"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_pwm/include"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_adc/include"
   )
 
 # The set of dependency files which are needed:
@@ -118,10 +128,15 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "C:/pico/pico-sdk/src/common/pico_util/datetime.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/common/pico_util/datetime.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/common/pico_util/datetime.c.obj.d"
   "C:/pico/pico-sdk/src/common/pico_util/pheap.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/common/pico_util/pheap.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/common/pico_util/pheap.c.obj.d"
   "C:/pico/pico-sdk/src/common/pico_util/queue.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/common/pico_util/queue.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/common/pico_util/queue.c.obj.d"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_adc/adc.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_adc/adc.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_adc/adc.c.obj.d"
   "C:/pico/pico-sdk/src/rp2_common/hardware_claim/claim.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_claim/claim.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_claim/claim.c.obj.d"
   "C:/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.c.obj.d"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_dma/dma.c.obj.d"
   "C:/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.c.obj.d"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_i2c/i2c.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_i2c/i2c.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_i2c/i2c.c.obj.d"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_interp/interp.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_interp/interp.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_interp/interp.c.obj.d"
   "C:/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_irq/irq.c.obj.d"
+  "C:/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_pio/pio.c.obj.d"
   "C:/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_pll/pll.c.obj.d"
   "C:/pico/pico-sdk/src/rp2_common/hardware_spi/spi.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_spi/spi.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_spi/spi.c.obj.d"
   "C:/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.obj" "gcc" "CMakeFiles/CAN_TEST.dir/C_/pico/pico-sdk/src/rp2_common/hardware_sync/sync.c.obj.d"

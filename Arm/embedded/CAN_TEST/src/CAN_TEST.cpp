@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "mcp2515.h"
+#include "mcp2515.cpp"
 #include <time.h>
 #include <iostream>
 
@@ -21,18 +21,19 @@
 // IMU 
 #define SAMPLE_PERIOD (0.055f) // 0.05f replace this with actual sample period
 
-
+__u8 value = 8;
 can_frame rx;
 can_frame tx;
 
 uint64_t check;
 
-tx.can_dlc = PAYLOAD_SIZE;
+
 
 
 int main() {
     stdio_init_all();
-   
+    
+    tx.can_dlc = value;
     MCP2515 mcp2515(spi1, CS_PIN, TX_PIN, RX_PIN, SCK_PIN, SPI_CLOCK);
     
     mcp2515.reset();
@@ -46,7 +47,7 @@ int main() {
         if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
             printf("New frame from ID: %10x\n", rx.can_id);
             
-            memcpy(&check, rx.data, sizeof(unint64_t));
+            memcpy(&check, rx.data, sizeof(uint64_t));
             std::cout << check << std::endl;
 
             printf("TEST _______________");

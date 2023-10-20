@@ -410,6 +410,30 @@ C_\pico\pico-sdk\src\common\pico_util\queue.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\common\pico_util\queue.c.s
 .PHONY : C_\pico\pico-sdk\src\common\pico_util\queue.c.s
 
+C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.obj: C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.obj
+
+# target to build an object file
+C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.obj
+
+C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.i: C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.i
+
+# target to preprocess a source file
+C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.i
+
+C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.s: C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.s
+
+# target to generate assembly for a file
+C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_adc\adc.c.s
+
 C_\pico\pico-sdk\src\rp2_common\hardware_claim\claim.obj: C_\pico\pico-sdk\src\rp2_common\hardware_claim\claim.c.obj
 .PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_claim\claim.obj
 
@@ -466,6 +490,30 @@ C_\pico\pico-sdk\src\rp2_common\hardware_divider\divider.S.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_divider\divider.S.obj
 .PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_divider\divider.S.obj
 
+C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.obj: C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.obj
+
+# target to build an object file
+C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.obj
+
+C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.i: C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.i
+
+# target to preprocess a source file
+C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.i
+
+C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.s: C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.s
+
+# target to generate assembly for a file
+C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_dma\dma.c.s
+
 C_\pico\pico-sdk\src\rp2_common\hardware_gpio\gpio.obj: C_\pico\pico-sdk\src\rp2_common\hardware_gpio\gpio.c.obj
 .PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_gpio\gpio.obj
 
@@ -489,6 +537,54 @@ C_\pico\pico-sdk\src\rp2_common\hardware_gpio\gpio.s: C_\pico\pico-sdk\src\rp2_c
 C_\pico\pico-sdk\src\rp2_common\hardware_gpio\gpio.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_gpio\gpio.c.s
 .PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_gpio\gpio.c.s
+
+C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.obj: C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.obj
+
+# target to build an object file
+C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.obj
+
+C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.i: C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.i
+
+# target to preprocess a source file
+C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.i
+
+C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.s: C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.s
+
+# target to generate assembly for a file
+C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_i2c\i2c.c.s
+
+C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.obj: C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.obj
+
+# target to build an object file
+C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.obj
+
+C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.i: C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.i
+
+# target to preprocess a source file
+C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.i
+
+C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.s: C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.s
+
+# target to generate assembly for a file
+C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_interp\interp.c.s
 
 C_\pico\pico-sdk\src\rp2_common\hardware_irq\irq.obj: C_\pico\pico-sdk\src\rp2_common\hardware_irq\irq.c.obj
 .PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_irq\irq.obj
@@ -521,6 +617,30 @@ C_\pico\pico-sdk\src\rp2_common\hardware_irq\irq_handler_chain.obj: C_\pico\pico
 C_\pico\pico-sdk\src\rp2_common\hardware_irq\irq_handler_chain.S.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_irq\irq_handler_chain.S.obj
 .PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_irq\irq_handler_chain.S.obj
+
+C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.obj: C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.obj
+
+# target to build an object file
+C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.obj
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.obj
+
+C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.i: C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.i
+
+# target to preprocess a source file
+C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.i
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.i
+
+C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.s: C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.s
+
+# target to generate assembly for a file
+C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\CAN_TEST.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\CAN_TEST.dir\C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.s
+.PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_pio\pio.c.s
 
 C_\pico\pico-sdk\src\rp2_common\hardware_pll\pll.obj: C_\pico\pico-sdk\src\rp2_common\hardware_pll\pll.c.obj
 .PHONY : C_\pico\pico-sdk\src\rp2_common\hardware_pll\pll.obj
@@ -1189,6 +1309,9 @@ help:
 	@echo ... C_/pico/pico-sdk/src/common/pico_util/queue.obj
 	@echo ... C_/pico/pico-sdk/src/common/pico_util/queue.i
 	@echo ... C_/pico/pico-sdk/src/common/pico_util/queue.s
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_adc/adc.obj
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_adc/adc.i
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_adc/adc.s
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_claim/claim.obj
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_claim/claim.i
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_claim/claim.s
@@ -1196,13 +1319,25 @@ help:
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.i
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_clocks/clocks.s
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_divider/divider.obj
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_dma/dma.obj
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_dma/dma.i
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_dma/dma.s
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.obj
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.i
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_gpio/gpio.s
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_i2c/i2c.obj
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_i2c/i2c.i
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_i2c/i2c.s
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_interp/interp.obj
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_interp/interp.i
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_interp/interp.s
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_irq/irq.obj
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_irq/irq.i
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_irq/irq.s
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_irq/irq_handler_chain.obj
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_pio/pio.obj
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_pio/pio.i
+	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_pio/pio.s
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_pll/pll.obj
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_pll/pll.i
 	@echo ... C_/pico/pico-sdk/src/rp2_common/hardware_pll/pll.s
