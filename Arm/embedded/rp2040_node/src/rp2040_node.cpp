@@ -33,10 +33,10 @@
 typedef unsigned long unint32_t;
 #define CONTENT_OF(addr) (*(volatile unint32_t*)addr)
 #define PAD_CONTROL_BASE 0x4001c000
-#define REG_PAD_CONTROL_GPIO15 (PAD_CONTROL_BASE+0x40)
+#define REG_PAD_CONTROL_GPIO15 (PAD_CONTROL_BASE+0x24)
 CONTENT_OF(REG_PAD_CONTROL_GPIO15) = CONTENT_OF(REG_PAD_CONTROL_GPIO15) & ~(1 << 3) | (1 << 2); //pull down
-CONTENT_OF(REG_PAD_CONTROL_GPIO15) = CONTENT_OF(REG_PAD_CONTROL_GPIO15) & ~(1 << 2) | (1 << 3); //pull up 
-CONTENT_OF(REG_PAD_CONTROL_GPIO15) = CONTENT_OF(REG_PAD_CONTROL_GPIO15) & ~(1 << 3) & ~(1 << 2); //pull none
+// CONTENT_OF(REG_PAD_CONTROL_GPIO15) = CONTENT_OF(REG_PAD_CONTROL_GPIO15) & ~(1 << 2) | (1 << 3); //pull up 
+// CONTENT_OF(REG_PAD_CONTROL_GPIO15) = CONTENT_OF(REG_PAD_CONTROL_GPIO15) & ~(1 << 3) & ~(1 << 2); //pull none
 
 float accel_cal_const = 16384.0;
 float gyro_cal_const = 131.1;
