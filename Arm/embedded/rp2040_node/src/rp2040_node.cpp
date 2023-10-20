@@ -129,7 +129,7 @@ struct cal_offset {
     z_offset
 }
 
-cal_offset calibrate_accel(double cal_const){
+cal_offset calibrate_accel(float cal_const){
 
     int16_t imu_sample[3];
     lsm9ds1.readAccel(imu_sample);
