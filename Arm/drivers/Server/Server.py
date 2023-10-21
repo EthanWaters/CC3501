@@ -5,7 +5,7 @@ from typing import Any
 from Client import Client
 
 class Server:
-    def __init__(self, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=1024):
+    def __init__(self, HOST="192.168.0.252", PORT=54321, BUFF_SIZE=1024):
         self.s = socket.socket(type=SOCK_DGRAM)
         self.HOST = HOST
         self.PORT = PORT
