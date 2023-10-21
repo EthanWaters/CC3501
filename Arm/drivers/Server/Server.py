@@ -2,10 +2,13 @@ import socket
 from socket import SOCK_DGRAM, SO_REUSEADDR
 import threading
 from typing import Any
-from Client import Client
 
 class Server:
+<<<<<<< HEAD
     def __init__(self, HOST="192.168.0.252", PORT=54321, BUFF_SIZE=1024):
+=======
+    def __init__(self, HOST="192.168.0.185", PORT=54321, BUFF_SIZE=64):
+>>>>>>> 62b31780b4377d3c714efd117908804968d52275
         self.s = socket.socket(type=SOCK_DGRAM)
         self.HOST = HOST
         self.PORT = PORT
@@ -20,6 +23,7 @@ class Server:
         
         print(self.received_data)
         self.start_receiving()
+        self.get_data()
     
     def __repr__(self):
         return "Server-{}:{} /n{}".format(self.HOST, self.PORT, self.received_data)  
@@ -65,3 +69,4 @@ class Server:
     def received_data(self, received_data):
         self._received_data = received_data
 
+Server()

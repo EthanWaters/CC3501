@@ -1,66 +1,48 @@
 #include <PiCameraDetection.h>
 
 
-PiCameraDetection::PiCameraDetection() : window_capture_name("Camera"),
+PiCameraDetection::PiCameraDetection(std::shared_ptr<cv::VideoCapture> cap) : window_capture_name("Camera"),
       window_detection_name("Camera_Threshold"),
       max_operator(4),
       max_elem(2),
       max_kernel_size(21),
       max_thresh(255),
       max_value_H(360 / 2),
-      max_value(255)
-
+      max_value(255),
+      morph_elem(),  // Initialize other member variables here
+	morph_size(),
+	morph_operator(),
+	low_H(0),
+	low_S(0),
+	low_V(0),
+	high_R(max_value),
+	high_G(max_value),
+	high_B(max_value),
+	low_R(0),
+	low_G(0),
+	low_B(0),
+	high_H(max_value_H),
+	high_S(max_value),
+	high_V(max_value),
+	color(Scalar( 256, 256, 256 )),
+	color2(Scalar( 0, 256, 0 )),
+	mc(),
+	frame(),
+	frame_HSV(),
+	frame_threshold(),
+	canny_output(),
+	contours()
+	
 {   
-	int morph_elem;
-	int morph_size;
-	int morph_operator;
-	int low_H, low_S, low_V;
-	int high_R, high_G, high_B;
-	int low_R, low_G, low_B;
-	int high_H, high_S, high_V;
-	Scalar color;
-	Scalar color2;
-	cv::Mat frame, frame_HSV, frame_threshold, canny_output;
-	vector<vector<Point>> contours;
-	cv::VideoCapture cap;
+	this-> cap = cap;
+  
 }	
-
-
-
-int PiCameraDetection::init_capture(){
-    
-    // Open the video camera.
-    std::string pipeline = "libcamerasrc"
-        " ! video/x-raw, width=800, height=600" // camera needs to capture at a higher resolution
-        " ! videoconvert"
-        " ! videoscale"
-        " ! video/x-raw, width=400, height=300" // can downsample the image after capturing
-        " ! videoflip method=rotate-180" // remove this line if the image is upside-down
-        " ! appsink drop=true max_buffers=2";
-    cv::VideoCapture cap(pipeline, cv::CAP_GSTREAMER);
-    if(!cap.isOpened()) {
-        printf("Could not open camera.\n");
-        return 1;
-    }
-    
-    return 0;
-    
-}
 
 
 void PiCameraDetection::init_window(){
 	// Create the OpenCV window
     cv::namedWindow(window_capture_name, cv::WINDOW_AUTOSIZE);
     cv::namedWindow(window_detection_name, cv::WINDOW_AUTOSIZE);
-    
-    //auto on_low_H_thresh_trackbar_adapter = cv::adapt(
-    //[](int pos, void* data) {
-      //PiCameraDetection* current_instance = (PiCameraDetection*)data;
-
-      //current_instance->low_H = min(current_instance->high_H-1, current_instance->low_H);
-      //setTrackbarPos("Low H", window_detection_name, current_instance->low_H);
-    //},
-    //this);
     
      // Trackbars to set thresholds for HSV values
      createTrackbar("Low H", window_detection_name, &low_H, max_value_H, on_low_H_thresh_trackbar, this);
@@ -69,13 +51,13 @@ void PiCameraDetection::init_window(){
      createTrackbar("High S", window_detection_name, &high_S, max_value, on_high_S_thresh_trackbar, this);
      createTrackbar("Low V", window_detection_name, &low_V, max_value, on_low_V_thresh_trackbar, this);
      createTrackbar("High V", window_detection_name, &high_V, max_value, on_high_V_thresh_trackbar, this);
-     createTrackbar("Low R", window_detection_name, &low_R, max_value, on_low_R_thresh_trackbar, this);
-     createTrackbar("High R", window_detection_name, &high_R, max_value, on_high_R_thresh_trackbar, this);
-     createTrackbar("Low G", window_detection_name, &low_G, max_value, on_low_G_thresh_trackbar, this);
-     createTrackbar("High G", window_detection_name, &high_G, max_value, on_high_G_thresh_trackbar, this);
-     createTrackbar("Low B", window_detection_name, &low_B, max_value, on_low_B_thresh_trackbar, this);
-     createTrackbar("High B", window_detection_name, &high_V, max_value, on_high_B_thresh_trackbar, this);
-    
+     //createTrackbar("Low R", window_detection_name, &low_R, max_value, on_low_R_thresh_trackbar, this);
+     //createTrackbar("High R", window_detection_name, &high_R, max_value, on_high_R_thresh_trackbar, this);
+     //createTrackbar("Low G", window_detection_name, &low_G, max_value, on_low_G_thresh_trackbar, this);
+     //createTrackbar("High G", window_detection_name, &high_G, max_value, on_high_G_thresh_trackbar, this);
+     //createTrackbar("Low B", window_detection_name, &low_B, max_value, on_low_B_thresh_trackbar, this);
+     //createTrackbar("High B", window_detection_name, &high_V, max_value, on_high_B_thresh_trackbar, this);
+
     //Trackbars for Morphology options 
      createTrackbar("Operator:\n 0: Opening - 1: Closing \n 2: Gradient - 3: Top Hat \n 4: Black Hat", window_capture_name, &morph_operator, max_operator, on_morph_operator, this);
      createTrackbar( "Element:\n 0: Rect - 1: Cross - 2: Ellipse", window_capture_name, &morph_elem, max_elem, on_morph_elem, this);
@@ -85,7 +67,7 @@ void PiCameraDetection::init_window(){
 
 
 int PiCameraDetection::detect_coordinates(){	
-	if (!cap.read(frame)) {
+	if (!cap->read(frame)) {
             printf("Could not read a frame.\n");
             return 1;
         }
@@ -93,9 +75,9 @@ int PiCameraDetection::detect_coordinates(){
 	
 	// Convert from BGR to HSV colorspace
 	cvtColor(frame, frame_HSV, COLOR_BGR2HSV);
-	inRange(frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), HSV_threshold);
-	inRange(frame, Scalar(low_R, low_G, low_B), Scalar(high_R, high_G, high_B), RGB_threshold);
-	cv::bitwise_and(HSV_threshold, RGB_threshold, frame_threshold);
+	inRange(frame_HSV, Scalar(low_H, low_S, low_V), Scalar(high_H, high_S, high_V), frame_threshold); //HSV_threshold
+	//inRange(frame, Scalar(low_R, low_G, low_B), Scalar(high_R, high_G, high_B), RGB_threshold);
+	//cv::bitwise_and(HSV_threshold, RGB_threshold, frame_threshold);
 	
 	// Perform morphology
 	int operation = morph_operator + 2;
@@ -111,16 +93,43 @@ int PiCameraDetection::detect_coordinates(){
 }	
 
 
-void PiCameraDetection::populate_window(){	
-	vector<vector<Point> > contours;
+
+vector<vector<Point>> PiCameraDetection::get_contour(){	
+    findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
+    return contours;
+}
+
+
+
+void PiCameraDetection::populate_window_single(){	
+	
 	findContours(frame_threshold, contours, RETR_TREE, CHAIN_APPROX_SIMPLE );
 	for( size_t i = 0; i< contours.size(); i++ ){
-		drawContours( frame, contours, (int)i, color, 2 );
+		drawContours(frame, contours, (int)i, color, 2 );
 	 }
 	
 	//show frame
 	circle(frame, mc, 4, color2, -1, 8, 0 );
 	putText(frame, "Centre", mc,FONT_HERSHEY_COMPLEX, 1,color2, 2);
+	cv::imshow(window_capture_name, frame);
+	cv::imshow(window_detection_name, frame_threshold);
+	cv::waitKey(1);	
+	
+}
+
+
+
+void PiCameraDetection::populate_window(std::vector<std::vector<cv::Point>> contours[], cv::Point2f centroids[], int length){	
+	for( size_t i = 0; i < length; i++){
+	    circle(frame, centroids[i], 4, color2, -1, 8, 0 );
+	    size_t size = contours[i].size();
+	    for( size_t j = 0; j< size; j++){
+		drawContours(frame, contours[i], (int)j, color, 2 );
+	    }
+	 }
+	
+	//show frame
+	
 	cv::imshow(window_capture_name, frame);
 	cv::imshow(window_detection_name, frame_threshold);
 	cv::waitKey(1);	
@@ -135,7 +144,9 @@ int PiCameraDetection::save_calibration(const std::string& filename) {
         std::cerr << "Failed to open file for writing: " << filename << std::endl;
         return 1;
     }
-
+    fs << "morph_elem" << morph_elem;
+    fs << "morph_size" << morph_size;
+    fs << "morph_operator" << morph_operator;
     fs << "low_H" << low_H;
     fs << "high_H" << high_H;
     fs << "low_S" << low_S;
@@ -163,14 +174,16 @@ int PiCameraDetection::load_calibration(const std::string& filename) {
         std::cerr << "Failed to open file for reading: " << filename << std::endl;
         return 1;
     }
-
+    fs["morph_elem"] << morph_elem;
+    fs["morph_size"] << morph_size;
+    fs["morph_operator"] << morph_operator;
     fs["low_H"] >> low_H;
     fs["high_H"] >> high_H;
     fs["low_S"] >> low_S;
     fs["high_S"] >> high_S;
     fs["low_V"] >> low_V;
     fs["high_V"] >> high_V;
-
+    
     // Load RGB thresholding variables
     fs["low_R"] >> low_R;
     fs["high_R"] >> high_R;
@@ -178,7 +191,7 @@ int PiCameraDetection::load_calibration(const std::string& filename) {
     fs["high_G"] >> high_G;
     fs["low_B"] >> low_B;
     fs["high_B"] >> high_B;
-
+    
     fs.release();
     std::cout << "Threshold variables loaded from " << filename << std::endl;
     return 0;
@@ -190,9 +203,69 @@ cv::Point2f PiCameraDetection::get_centroid() {
 }
     
     
-void PiCameraDetection::close(){	
-	cap.release();
+std::string  PiCameraDetection::get_centroid_s() {
+    std::string pointString = "[" + std::to_string(mc.x) + ", " + std::to_string(mc.y) + "]";
+    return pointString;
 }
+    
+    
+void PiCameraDetection::close(){	
+	cap->release();
+}
+
+
+
+
+float get_joint_angle(cv::Point2f centroid1, cv::Point2f centroid2, cv::Point2f centroid_ref){
+	
+	// scale values to be with reference to centroid_ref
+	
+    cv::Point2f vector1 = centroid1 - centroid_ref;
+    cv::Point2f vector2 = centroid2 - centroid_ref;
+
+    // Calculate the angle between the vectors using atan2
+    double angle1 = atan2(vector1.y, vector1.x);
+    double angle2 = atan2(vector2.y, vector2.x);
+
+    // Calculate the angle difference (angle2 - angle1)
+    float angleDifference = angle2 - angle1;
+
+    // Ensure the angle is within the range of -pi to pi
+    if (angleDifference > CV_PI) {
+        angleDifference -= 2 * CV_PI;
+    } else if (angleDifference <= -CV_PI) {
+        angleDifference += 2 * CV_PI;
+    }
+
+    return angleDifference;
+	
+}
+
+
+void get_arm_angles(float angles[], cv::Point2f centroids[], int arrayLength ){
+	//(EXAMPLE)
+	//Centroid 0: Shoulder 
+	//Centroid 1: Elbow 
+	//Centroid 2: Wrist
+	//Centroid 3: Knuckle 
+	
+	for(int i=0; i<arrayLength; i++){
+		angles[i] = get_joint_angle(centroids[i], centroids[i+2], centroids[i+1]);
+	}
+	
+}
+
+
+void get_angle_differences(float angle_differences[], float angles[], float previous_angles[], int arrayLength){
+	//(EXAMPLE)
+	//Angle 0: Elbow 
+	//Angle 1: Wrist
+	
+	for(int i=0; i<arrayLength; i++){
+		angle_differences[i] = previous_angles[i] - angles[i];
+	}
+}
+
 
 void PiCameraDetection::on_low_H_thresh_trackbar(int, void* data)
 {

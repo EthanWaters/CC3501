@@ -13,12 +13,12 @@ WIFI_IP_ADDRESS = "10.10.10.10"
 DIST_SMOOTHING = 0.05
 HOST = "127.0.0.1"
 PORT = 54321
-BUFF_SIZE=2048
+BUFF_SIZE=64
 SPEED = 500
 
 
 
-def server_init(receive_data, receive_data_event, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=2048):
+def server_init(receive_data, receive_data_event, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=64):
     s = socket.socket(type=SOCK_DGRAM)
     s.bind((HOST, PORT))
 

@@ -1,0 +1,17 @@
+%YAML:1.0
+---
+morph_elem: 0
+morph_size: 2
+morph_operator: 0
+low_H: 0
+high_H: 78
+low_S: 58
+high_S: 138
+low_V: 54
+high_V: 255
+low_R: 0
+high_R: 255
+low_G: 0
+high_G: 255
+low_B: 0
+high_B: 255
