@@ -31,8 +31,8 @@
 #define PITCH_ID 0x02
 #define ROLL_ID 0x03
 #define PAYLOAD_SIZE 4
-#define CANTX GPIO_NUM_38
-#define CANRX GPIO_NUM_39
+#define CANTX GPIO_NUM_2
+#define CANRX GPIO_NUM_1
 // #define portMAX_DELAY 10000
 #define NO_OF_DATA_MSGS 3
 
