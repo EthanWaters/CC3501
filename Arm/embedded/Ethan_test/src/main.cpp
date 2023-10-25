@@ -21,8 +21,8 @@
 #define I2C_SCL_PIN 6
 #define SA01 4
 #define CS 5
-#define AG_A 0xD4
-#define M_A 0x38
+#define AG_A 0xD5
+#define M_A 0x39
 
 int16_t accel[3];
 int16_t gyro[3];
@@ -71,14 +71,14 @@ void readRaw(int16_t accel[3], int16_t gyro[3], int16_t mag[3]) {
 int main() {
 
     stdio_init_all();
-    gpio_init(SA01);
-    gpio_put(SA01, 1);
+    gpio_pull_down(SA01);
+    gpio_pull_up(I2C_SDA_PIN);
+    gpio_pull_up(I2C_SCL_PIN);
     i2c_init(i2c_default, 400 * 1000);
     gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
     gpio_pull_up(CS);
-    gpio_pull_up(I2C_SDA_PIN);
-    gpio_pull_up(I2C_SCL_PIN);
+   
 
 
     //printf("Calibrating...place on level surface...\n");

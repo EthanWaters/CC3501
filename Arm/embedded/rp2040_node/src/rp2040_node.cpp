@@ -16,7 +16,7 @@
 #define CS_PIN 29
 #define TX_PIN 27
 #define RX_PIN 28
-#define SPI_CLOCK 16000000 //16MHz
+#define SPI_CLOCK 1000000 //16MHz
 #define SCK_PIN 26
 
 //CAN bus
@@ -24,7 +24,8 @@
 #define YAW_ID 0x01
 #define PITCH_ID 0x02
 #define ROLL_ID 0x03
-#define PAYLOAD_SIZE 8
+#define PAYLOAD_SIZE 4
+#define CAN_RESET 15
 
 // IMU 
 #define SAMPLE_PERIOD (0.055f) // 0.05f replace this with actual sample period
@@ -54,6 +55,10 @@ int main() {
     stdio_init_all();
     LSM9DS1 lsm9ds1();
 
+    gpio_init(CAN_RESET);
+    gpio_set_dir(CAN_RESET, 1);
+    gpio_put(CAN_RESET, 1);
+
     cal_offset gyro_offset = lsm9ds1.cal_gyro(gyro);
     cal_offset accel_offset = lsm9ds1.cal_accel(accel);
 
@@ -63,7 +68,7 @@ int main() {
     MCP2515 mcp2515(spi1, CS_PIN, TX_PIN, RX_PIN, SCK_PIN, SPI_CLOCK);
     
     mcp2515.reset();
-    mcp2515.setBitrate(CAN_1000KBPS, MCP_16MHZ);
+    mcp2515.setBitrate(CAN_1000KBPS, MCP_8MHZ);
     mcp2515.setNormalMode();    
 
     //Listen loop
@@ -95,12 +100,6 @@ int main() {
 
                 const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
 
-
-                /*
-                
-                LOGIC TO READ ACCEL, GYRO and MAG -> Kalman Filter -> OUTPUT: Yaw, Pitch and Roll.
-                
-                */
 
                 tx.can_id = SLAVE_ID + YAW_ID;  
                 memcpy(tx.data, &yaw, sizeof(float));

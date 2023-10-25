@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Lachlan/OneDrive - James Cook University/Third Year/Semester 2/CC3501/Assignment 2/CC3501/Arm/embedded/CAN_TEST
+# Install script for directory: D:/Subjects/CC3501/Arm/embedded/CAN_TEST
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/Lachlan/OneDrive - James Cook University/Third Year/Semester 2/CC3501/Assignment 2/CC3501/Arm/embedded/CAN_TEST/build/pico-sdk/cmake_install.cmake")
+  include("D:/Subjects/CC3501/Arm/embedded/CAN_TEST/build/pico-sdk/cmake_install.cmake")
 
 endif()
 
@@ -51,5 +51,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/Lachlan/OneDrive - James Cook University/Third Year/Semester 2/CC3501/Assignment 2/CC3501/Arm/embedded/CAN_TEST/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/Subjects/CC3501/Arm/embedded/CAN_TEST/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

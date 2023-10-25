@@ -265,7 +265,7 @@ class MCP2515 {
             EFLG_EWARN  = (1<<0)
         };
 
-    private:
+    public:
         static const uint8_t CANCTRL_REQOP = 0xE0;
         static const uint8_t CANCTRL_ABAT = 0x10;
         static const uint8_t CANCTRL_OSM = 0x08;
@@ -456,7 +456,7 @@ class MCP2515 {
 
         ERROR setMode(const CANCTRL_REQOP_MODE mode);
 
-        uint8_t readRegister(const REGISTER reg);
+        
         void readRegisters(const REGISTER reg, uint8_t values[], const uint8_t n);
         void setRegister(const REGISTER reg, const uint8_t value);
         void setRegisters(const REGISTER reg, const uint8_t values[], const uint8_t n);
@@ -487,6 +487,7 @@ class MCP2515 {
         ERROR sendMessage(const TXBn txbn, const struct can_frame *frame);
         ERROR sendMessage(const struct can_frame *frame);
         ERROR readMessage(const RXBn rxbn, struct can_frame *frame);
+        uint8_t readRegister(const REGISTER reg);   
         ERROR readMessage(struct can_frame *frame);
         bool checkReceive(void);
         bool checkError(void);

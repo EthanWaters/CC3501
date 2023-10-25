@@ -80,7 +80,7 @@ void wait_for_data(){
 void sendRequest(uint32_t slaveID) {
     struct can_frame request_frame;
     request_frame.can_id = slaveID;  // Set the CAN ID of the specific slave
-    request_frame.can_dlc = 0;       // No data payload for the request
+    request_frame.can_dlc = 8;       // No data payload for the request
     mcp2515.sendMessage(request_frame);
 }
 

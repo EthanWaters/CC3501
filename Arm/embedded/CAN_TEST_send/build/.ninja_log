@@ -1,0 +1,5 @@
+# ninja log v5
+17	122	7199234611405324	pico-sdk/src/rp2_common/boot_stage2/CMakeFiles/bs2_default.dir/compile_time_choice.S.obj	3f20bcdf574748a5
+124	275	7199234612327113	pico-sdk/src/rp2_common/boot_stage2/bs2_default.elf	b9949aa66b1432ea
+275	306	7199234613253562	pico-sdk/src/rp2_common/boot_stage2/bs2_default.bin	a8a1712020ea2e4d
+275	306	7199234613253562	D:/Subjects/CC3501/Arm/embedded/CAN_TEST_send/build/pico-sdk/src/rp2_common/boot_stage2/bs2_default.bin	a8a1712020ea2e4d

@@ -9,7 +9,9 @@ else()
     message(STATUS "Detected that the current kit is a host compiler. Building the test harness.")
 endif()
 
-set(ProjectDir C:/Users/Lachlan/OneDrive - James Cook University/Third Year/Semester 2/CC3501/Assignment 2/CC3501/Arm)
+cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH ProjectDir)
+get_filename_component(ProjectDir "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
+get_filename_component(ProjectDir "${ProjectDir}" DIRECTORY)
 message("ProjectDir is ${ProjectDir}")
 # Detect if the active kit is an ARM cross-compiler
 if(CrossCompiling)

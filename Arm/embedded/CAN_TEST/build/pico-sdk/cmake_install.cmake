@@ -39,9 +39,9 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/Lachlan/OneDrive - James Cook University/Third Year/Semester 2/CC3501/Assignment 2/CC3501/Arm/embedded/CAN_TEST/build/pico-sdk/tools/cmake_install.cmake")
-  include("C:/Users/Lachlan/OneDrive - James Cook University/Third Year/Semester 2/CC3501/Assignment 2/CC3501/Arm/embedded/CAN_TEST/build/pico-sdk/src/cmake_install.cmake")
-  include("C:/Users/Lachlan/OneDrive - James Cook University/Third Year/Semester 2/CC3501/Assignment 2/CC3501/Arm/embedded/CAN_TEST/build/pico-sdk/docs/cmake_install.cmake")
+  include("D:/Subjects/CC3501/Arm/embedded/CAN_TEST/build/pico-sdk/tools/cmake_install.cmake")
+  include("D:/Subjects/CC3501/Arm/embedded/CAN_TEST/build/pico-sdk/src/cmake_install.cmake")
+  include("D:/Subjects/CC3501/Arm/embedded/CAN_TEST/build/pico-sdk/docs/cmake_install.cmake")
 
 endif()
 

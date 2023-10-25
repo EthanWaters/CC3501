@@ -1,0 +1,115 @@
+/*
+ * SPDX-FileCopyrightText: 2010-2022 Espressif Systems (Shanghai) CO LTD
+ *
+ * SPDX-License-Identifier: CC0-1.0
+ */
+
+#include <stdio.h>
+#include <inttypes.h>
+#include <sdkconfig.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_chip_info.h"
+#include "esp_flash.h"
+#include "esp_event.h"
+#include "esp_log.h"
+#include "esp_wifi.h"
+#include <string.h>
+#include <sys/param.h>
+#include "freertos/event_groups.h"
+#include "esp_system.h"
+#include "nvs_flash.h"
+#include "esp_netif.h"
+#include "protocol_examples_common.h"
+#include "lwip/err.h"
+#include "lwip/sockets.h"
+#include "lwip/sys.h"
+#include <lwip/netdb.h>
+
+#define WIFI_SSID "elequent"
+#define WIFI_PASS "elequent137"
+
+#define SERVER_IP "192.168.0.128"
+#define SERVER_PORT 54321
+
+static const char *TAG = "wifi";
+
+static esp_err_t event_handler(void *ctx, system_event_t *event) {
+    switch (event->event_id) {
+        case SYSTEM_EVENT_STA_START:
+            ESP_LOGI(TAG, "Wi-Fi started");
+            esp_wifi_connect();
+            break;
+        case SYSTEM_EVENT_STA_CONNECTED:
+            ESP_LOGI(TAG, "Connected to Wi-Fi");
+            break;
+        case SYSTEM_EVENT_STA_GOT_IP:
+            ESP_LOGI(TAG, "Got an IP address");
+            break;
+        case SYSTEM_EVENT_STA_DISCONNECTED:
+            ESP_LOGI(TAG, "Disconnected from Wi-Fi");
+            esp_wifi_connect();
+            break;
+        default:
+            break;
+    }
+    return ESP_OK;
+}
+
+
+
+void app_main(void)
+{
+    printf("Starting Wifi code...\n");
+    ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
+
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+
+    wifi_config_t wifi_config = {
+        .sta = {
+            .ssid = WIFI_SSID,
+            .password = WIFI_PASS,
+        },
+    };
+    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+
+    ESP_ERROR_CHECK(esp_wifi_start());
+
+    ESP_LOGI(TAG, "Waiting for Wi-Fi connection...");
+     while (1) {
+        if (esp_wifi_connect() == ESP_OK) {
+            break;
+        }
+        vTaskDelay(1000 / portTICK_RATE_MS);
+    }
+
+    // Create a UDP socket
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0) {
+        ESP_LOGE(TAG, "Failed to create socket");
+        vTaskDelete(NULL);
+    }
+
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(SERVER_PORT);
+    inet_pton(AF_INET, SERVER_IP, &server_addr.sin_addr.s_addr);
+
+    // Send a UDP message
+    const char *message = "Hello";
+    int send_result = sendto(sock, message, strlen(message), 0, (struct sockaddr *)&server_addr, sizeof(server_addr));
+
+    if (send_result < 0) {
+        ESP_LOGE(TAG, "Failed to send UDP message");
+    } else {
+        ESP_LOGI(TAG, "Message sent successfully");
+    }
+
+    // Close the socket
+    close(sock);
+
+    // Clean up and exit
+    esp_wifi_stop();
+    esp_wifi_deinit();
+}

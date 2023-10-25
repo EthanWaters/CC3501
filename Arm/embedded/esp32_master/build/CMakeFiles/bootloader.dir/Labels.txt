@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/CMakeFiles/bootloader
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/CMakeFiles/bootloader.rule
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/CMakeFiles/bootloader-complete.rule
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+D:/Subjects/CC3501/Arm/embedded/esp32_master/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
