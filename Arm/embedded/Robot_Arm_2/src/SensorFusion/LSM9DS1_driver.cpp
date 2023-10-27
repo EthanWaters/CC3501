@@ -363,19 +363,20 @@ void LSM9DS1Driver::selftestLSM9DS1()
   float gyrody = (gyro_ST[1] - gyro_noST[1]);
   float gyrodz = (gyro_ST[2] - gyro_noST[2]);
 
-printf("Gyro self-test results: ");
+printf("Gyro self-test results: \n");
 printf("x-axis = "); 
 printf("%f", gyrodx); 
 printf(" dps"); 
-printf(" should be between 20 and 250 dps");
+printf(" should be between 20 and 250 dps \n");
 printf("y-axis = ");
 printf("%f", gyrody); 
 printf(" dps"); 
-printf(" should be between 20 and 250 dps");
+printf(" should be between 20 and 250 dps \n");
 printf("z-axis = ");
 printf("%f", gyrodz); 
 printf(" dps");
-printf(" should be between 20 and 250 dps");
+printf(" should be between 20 and 250 dps \n");
+printf("\n"); printf("\n");
 
   float accdx = 1000.*(accel_ST[0] - accel_noST[0]);
   float accdy = 1000.*(accel_ST[1] - accel_noST[1]);
@@ -385,15 +386,16 @@ printf(" should be between 20 and 250 dps");
   printf("x-axis = "); 
   printf("%f", accdx); 
   printf(" mg"); 
-  printf(" should be between 60 and 1700 mg");
+  printf(" should be between 60 and 1700 mg \n");
   printf("y-axis = "); 
   printf("%f", accdy); 
   printf(" mg"); 
-  printf(" should be between 60 and 1700 mg");
+  printf(" should be between 60 and 1700 mg \n");
   printf("z-axis = "); 
   printf("%f", accdz); printf(" mg"); 
-  printf(" should be between 60 and 1700 mg");
-  
+  printf(" should be between 60 and 1700 mg \n");
+  printf("\n"); printf("\n");
+
   writeRegisters_AG(LSM9DS1XG_CTRL_REG10,   0x00); // disable self test
   sleep_ms(200);
 }
@@ -413,7 +415,7 @@ void LSM9DS1Driver::magcalLSM9DS1(float * dest1)
    writeRegisters_M(LSM9DS1M_CTRL_REG4_M, Mmode << 2 ); // select z-axis mode
    writeRegisters_M(LSM9DS1M_CTRL_REG5_M, 0x40 ); // select block update mode
    
-  printf("Mag Calibration: Wave device in a figure eight until done!");
+  printf("Mag Calibration: Wave device in a figure eight until done! \n");
   sleep_ms(4000);
   
    sample_count = 128; //update this for more accuracy?
@@ -446,7 +448,7 @@ void LSM9DS1Driver::magcalLSM9DS1(float * dest1)
   writeRegisters_M(LSM9DS1M_OFFSET_Z_REG_L_M, (int16_t) mag_bias[2] & 0xFF);
   writeRegisters_M(LSM9DS1M_OFFSET_Z_REG_H_M, ((int16_t)mag_bias[2] >> 8) & 0xFF);
  
-   printf("Mag Calibration done!");
+   printf("Mag Calibration done! \n");
 }
 
 
@@ -543,29 +545,52 @@ void LSM9DS1Driver::getAres() {
   }
 }
 
-void LSM9DS1Driver::CalibrateIMU(){
-  // get sensor resolutions, only need to do this once
-   getAres();
-   getGres();
-   getMres();
-   printf("accel sensitivity is "); printf("%f",1./(1000.*aRes)); printf(" LSB/mg");
-   printf("gyro sensitivity is "); printf("%f",1./(1000.*gRes)); printf(" LSB/mdps");
-   printf("mag sensitivity is "); printf("%f",1./(1000.*mRes)); printf(" LSB/mGauss");
+void LSM9DS1Driver::CalibrateAG(){
+  //get accel and gyro resolutions
+  getAres();
+  getGres();
+  // tell us the sensitivities 
+  printf("accel sensitivity is: "); printf("%f",1./(1000.*aRes)); printf(" LSB/mg \n");
+  printf("gyro sensitivity is: "); printf("%f",1./(1000.*gRes)); printf(" LSB/mdps \n");
+  sleep_ms(1500);
+  printf("\033[H\033[J");
 
-   printf("Perform gyro and accel self test");
-   selftestLSM9DS1(); // check function of gyro and accelerometer via self test
-   
-   printf(" Calibrate gyro and accel");
-   accelgyrocalibrateLSM9DS1(gyroBias, accelBias); // Calibrate gyro and accelerometers, load biases in bias registers
-   printf("accel biases (mg)"); printf("%f",1000.*accelBias[0]); printf("%f",1000.*accelBias[1]); printf("%f",1000.*accelBias[2]);
-   printf("gyro biases (dps)"); printf("%f", gyroBias[0]); printf("%f", gyroBias[1]); printf("%f", gyroBias[2]);
- 
+  printf("Performing gyro and accel self test...");
+  selftestLSM9DS1(); // check function of gyro and accelerometer via self test
+  printf("Self test complete! \n");
+  sleep_ms(1500);
+  printf("\033[H\033[J");
+
+  printf("Calibrating gyro and accel... place sensor on flat surface with zero movement \n");
+  sleep_ms(1500);
+  accelgyrocalibrateLSM9DS1(gyroBias, accelBias); // Calibrate gyro and accelerometers, load biases in bias registers
+  printf("\n"); printf("\n");
+  printf("Calibration Complete! \n");
+  printf("accel biases (mg): \n"); printf("ax %f \n",1000.*accelBias[0]); printf("ay %f \n",1000.*accelBias[1]); printf("az %f \n",1000.*accelBias[2]);
+  printf("\n"); printf("\n");
+  printf("gyro biases (dps): \n"); printf("gx %f \n", gyroBias[0]); printf("ay %f \n", gyroBias[1]); printf("gz %f \n", gyroBias[2]);
+  sleep_ms(1500);
+  printf("\033[H\033[J");
+}
+
+void LSM9DS1Driver::CalibrateMag(){
+  // get mag resolution
+   getMres();
+   printf("mag sensitivity is: "); printf("%f ",1./(1000.*mRes)); printf(" LSB/mGauss \n");
+   sleep_ms(1500);
+   printf("\033[H\033[J");
+
+   // calibrate mag
    magcalLSM9DS1(magBias);
-   printf("mag biases (mG)"); printf("%f",1000.*magBias[0]); printf("%f",1000.*magBias[1]); printf("%f",1000.*magBias[2]); 
+   printf("mag biases (mG): "); printf("mx %f \n",1000.*magBias[0]); printf("my %f \n",1000.*magBias[1]); printf("mz %f \n",1000.*magBias[2]); 
    sleep_ms(2000); // add sleep_ms to see results before serial spew of data
+   printf("\033[H\033[J");
    
-   configurelsm9ds1(); 
-   printf("LSM9DS1 initialized for active data mode...."); 
+   printf("Applying calibration settings and configuring LSM9DS1 \n");
+   configurelsm9ds1();
+   printf("\033[H\033[J");
+   sleep_ms(500); 
+   printf("LSM9DS1 initialized for active data mode....\n"); 
 }
 
 void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz)
