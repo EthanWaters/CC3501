@@ -6,7 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-#include "SensorFusion/LSM9DS1Headers.h"
+#include "LSM9DS1Headers.h"
 
 
 #define PI 3.14159
@@ -838,7 +838,7 @@ uint8_t data;
 
     // Serial print and/or display at 0.5 s rate independent of data rates
     delt_t = (current_time - start_time) - count;
-    if (delt_t > 1) { 
+    if (delt_t > 0) { 
 
     // if(SerialDebug) {
     // printf("Accel: "); 
