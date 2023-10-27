@@ -1,4 +1,6 @@
-
+#include <iostream>
+#include <string>
+#include <sstream>
 #include <string.h>
 #include <sys/param.h>
 #include "freertos/FreeRTOS.h"
@@ -50,104 +52,19 @@
 static EventGroupHandle_t s_wifi_event_group;
 static int s_retry_num = 0;
 static const char *payload = "Message from ESP32";
+float data_to_send[6]; 
+std::string string_to_send;
 
 // CAN bus variables
 static const twai_timing_config_t t_config = TWAI_TIMING_CONFIG_5KBITS();
 static const twai_filter_config_t f_config = TWAI_FILTER_CONFIG_ACCEPT_ALL();
 static const twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(CANTX, CANRX, TWAI_MODE_NORMAL);
 
-
-static void udp_client_task(void *pvParameters)
-{
-    
-    int addr_family = 0;
-    int ip_protocol = 0;
-    printf("Free heap size: %lu", esp_get_free_heap_size());
-    
-
-    struct sockaddr_in dest_addr;
-    dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
-    dest_addr.sin_family = AF_INET;
-    dest_addr.sin_port = htons(PORT);
-    addr_family = AF_INET;
-    ip_protocol = IPPROTO_IP;
-
-
-    int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
-    printf("Socket:%i\n", sock);
-    if (sock < 0) {
-        printf("Error");
-    }
-
-    // Set timeout
-    struct timeval timeout;
-    timeout.tv_sec = 10;
-    timeout.tv_usec = 0;
-    setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout);
-
-    printf("Socket created, sending to %s:%d\n", HOST_IP_ADDR, PORT);
-        // rx_task_queue = xQueueCreate(1, sizeof(rx_task_action_t));
-        // tx_task_queue = xQueueCreate(1, sizeof(tx_task_action_t));
-    twai_message_t rx_msg;
-    twai_message_t tx_msg;
-    while (1) {
-        
-        // uint32_t data_msgs_rec = 0;
-        // while (data_msgs_rec < NO_OF_DATA_MSGS) {
-            printf("BEFORE TWAI");
-
-         
-            tx_msg.identifier = REQUEST_SLAVE1;
-            tx_msg.data_length_code = 4;
-            tx_msg.data[0] = 'H';
-            tx_msg.data[1] = 'E';
-            tx_msg.data[2] = 'L';
-            tx_msg.data[3] = 'L';
-
-            //Queue message for transmission
-            if (twai_transmit(&tx_msg, pdMS_TO_TICKS(1000)) == ESP_OK) {
-                printf("Message queued for transmission\n");
-            } else {
-                printf("Failed to queue message for transmission\n");
-            }
-            // if (twai_receive(&rx_msg, pdMS_TO_TICKS(10000)) == ESP_OK) {
-            //     printf("TWAI IS OKAY");
-            //     if (rx_msg.identifier == REQUEST_SLAVE1) {
-
-            //         uint8_t* rec_data[3];
-            //         for (int i = 0; i < rx_msg.data_length_code; i++) {
-            //             rec_data[i] = rx_msg.data[i];
-            //             printf("%02X", rx_msg.data[i]);
-            //         }
-            //         printf("\n");
-            //         for (int i = 0; i < rx_msg.data_length_code; i++) {
-            //             printf("%c", rx_msg.data[i]);
-            //         }
-            //         printf("\n");
-            //     }
-            // }
-        // }
-            printf("DId I make it here ??? \n");
-            
-
-            int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-            if (err < 0) {
-                printf("Error occurred during sending err:%i\n", err);
-                break;
-            }
-            printf("Message sent\n");
-
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
-    }
-
-    if (sock != -1) {
-        printf("Shutting down socket and restarting...\n");
-        shutdown(sock, 0);
-        close(sock);
-    }
-
+struct segment {
+    float yaw;
+    float pitch;
+    float roll;
 }
-
 
 static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
@@ -220,9 +137,55 @@ void wifi_init_sta(void)
     }
 }
 
+
+segment recieve_slave_data(uint32_t Addr){
+    twai_message_t rx_msg;
+    int data_msgs_rec = 0;
+    segment node;
+    while (data_msgs_rec < NO_OF_DATA_MSGS) {
+        if (twai_receive(&rx_msg, pdMS_TO_TICKS(100)) == ESP_OK) {
+            if ((rx_msg.identifier - Addr) == YAW_ID) {
+                memcpy(&node.yaw, rx_msg.data, sizeof(float));
+            } else if ((rx_msg.identifier - Addr) == ROLL_ID) {
+                memcpy(&node.roll, rx_msg.data, sizeof(float));
+            } else if ((rx_msg.identifier - Addr) == PITCH_ID) {
+                memcpy(&node.pitch, rx_msg.data, sizeof(float));
+            }
+            data_msgs_rec += 1
+        }
+    }
+    return segment
+}
+
+void request_slave_data(uint32_t Addr){
+    twai_message_t tx_msg;
+    tx_msg.identifier = Addr;
+    tx_msg.data_length_code = 0;
+    if (twai_transmit(&tx_msg, pdMS_TO_TICKS(100)) == ESP_OK) {
+        printf("Message queued for transmission\n");
+    } else {
+        printf("Failed to queue message for transmission\n");
+    }
+}
+
+
+template <typename T>
+std::string array_to_string(const T& data) {
+    std::ostringstream oss;
+    size_t data_size = sizeof(data) / sizeof(data[0]);
+    for (size_t i = 0; i < data_size; ++i) {
+        oss << data[i];
+        if (i < data_size - 1) {
+            oss << ", ";
+        }
+    }
+    return oss.str();
+}
+
+
 void app_main(void)
 {
-
+    segment chest, forearm, bicep, hand;
     //setup wifi connection 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -276,65 +239,35 @@ void app_main(void)
         printf("Error");
     }
 
-    // Set timeout
     struct timeval timeout;
     timeout.tv_sec = 10;
     timeout.tv_usec = 0;
     setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout);
 
     printf("Socket created, sending to %s:%d\n", HOST_IP_ADDR, PORT);
-    // rx_task_queue = xQueueCreate(1, sizeof(rx_task_action_t));
-    // tx_task_queue = xQueueCreate(1, sizeof(tx_task_action_t));
-    twai_message_t rx_msg;
-    twai_message_t tx_msg;
+   
     while (1) {
         
-        // uint32_t data_msgs_rec = 0;
-        // while (data_msgs_rec < NO_OF_DATA_MSGS) {
-            printf("BEFORE TWAI");
+        request_slave_data(REQUEST_SLAVE1);
+        hand = recieve_slave_data(REQUEST_SLAVE1);
 
-         
-            tx_msg.identifier = REQUEST_SLAVE1;
-            tx_msg.data_length_code = 4;
-            tx_msg.data[0] = 'H';
-            tx_msg.data[1] = 'E';
-            tx_msg.data[2] = 'L';
-            tx_msg.data[3] = 'L';
+        request_slave_data(REQUEST_SLAVE2);
+        forearm = recieve_slave_data(REQUEST_SLAVE2);
+       
+        request_slave_data(REQUEST_SLAVE3);
+        bicep = recieve_slave_data(REQUEST_SLAVE3);
+      
+        request_slave_data(REQUEST_SLAVE4);
+        chest = recieve_slave_data(REQUEST_SLAVE4); 
 
-            //Queue message for transmission
-            if (twai_transmit(&tx_msg, pdMS_TO_TICKS(1000)) == ESP_OK) {
-                printf("Message queued for transmission\n");
-            } else {
-                printf("Failed to queue message for transmission\n");
-            }
-            // if (twai_receive(&rx_msg, pdMS_TO_TICKS(10000)) == ESP_OK) {
-            //     printf("TWAI IS OKAY");
-            //     if (rx_msg.identifier == REQUEST_SLAVE1) {
+        data_to_send = {hand.pitch, hand.roll, forearm.pitch, forearm.roll, bicep.pitch, bicep.roll}  
+        string_to_send = array_to_string(data_to_send);
 
-            //         uint8_t* rec_data[3];
-            //         for (int i = 0; i < rx_msg.data_length_code; i++) {
-            //             rec_data[i] = rx_msg.data[i];
-            //             printf("%02X", rx_msg.data[i]);
-            //         }
-            //         printf("\n");
-            //         for (int i = 0; i < rx_msg.data_length_code; i++) {
-            //             printf("%c", rx_msg.data[i]);
-            //         }
-            //         printf("\n");
-            //     }
-            // }
-        // }
-            printf("DId I make it here ??? \n");
-            
-
-            int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-            if (err < 0) {
-                printf("Error occurred during sending err:%i\n", err);
-                break;
-            }
-            printf("Message sent\n");
-
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
+        int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+        if (err < 0) {
+            printf("Error occurred during sending err:%i\n", err);
+            break;
+        }
     }
 
     if (sock != -1) {
@@ -342,7 +275,4 @@ void app_main(void)
         shutdown(sock, 0);
         close(sock);
     }
-
-
-    printf("AT END");
 }
