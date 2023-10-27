@@ -30,26 +30,11 @@
 // IMU 
 #define SAMPLE_PERIOD (0.055f) // 0.05f replace this with actual sample period
 
-// pad control for internal PUE PDE resistors
-typedef unsigned long unint32_t;
-#define CONTENT_OF(addr) (*(volatile unint32_t*)addr)
-#define PAD_CONTROL_BASE 0x4001c000
-#define REG_PAD_CONTROL_GPIO15 (PAD_CONTROL_BASE+0x24)
-CONTENT_OF(REG_PAD_CONTROL_GPIO15) = CONTENT_OF(REG_PAD_CONTROL_GPIO15) & ~(1 << 3) | (1 << 2); //pull down
-// CONTENT_OF(REG_PAD_CONTROL_GPIO15) = CONTENT_OF(REG_PAD_CONTROL_GPIO15) & ~(1 << 2) | (1 << 3); //pull up 
-// CONTENT_OF(REG_PAD_CONTROL_GPIO15) = CONTENT_OF(REG_PAD_CONTROL_GPIO15) & ~(1 << 3) & ~(1 << 2); //pull none
-
-float accel_cal_const = 16384.0;
-float gyro_cal_const = 131.1;
-float mag_cal_const = 0.15; 
-
 struct can_frame rx;
 struct can_frame tx;
 
-
 tx.can_dlc = PAYLOAD_SIZE;
 
-int16_t yaw, roll, pitch, gyro[3], accel[3], mag[3];
 
 int main() {
     stdio_init_all();
@@ -71,35 +56,27 @@ int main() {
     mcp2515.setBitrate(CAN_1000KBPS, MCP_8MHZ);
     mcp2515.setNormalMode();    
 
-    //Listen loop
+    // Gyro and accel calibration request
+     while(true) {
+        if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
+            if(rx.can_id == SLAVE_ID) {
+            
+            }
+        }
+     }
+    //Arm active data collection loop
     while(true) {
 
+        
+        if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
        
+        }
         if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
             printf("New frame from ID: %10x\n", rx.can_id);
-            if(rx.can_id == MASTER_REQUEST) {
+            if(rx.can_id == SLAVE_ID) {
                 
-                lsm9ds1.readAccel(accel);
-                lsm9ds1.readGyro(gyro);
-                lsm9ds1.readMag(mag);
-                
-                float gyrox = (gyro[0]/ gyro_cal_const) - gyro_offset.x_offset;
-                float gyroy = (gyro[1]/ gyro_cal_const) - gyro_offset.y_offset;
-                float gyroz = (gyro[2]/ gyro_cal_const) - gyro_offset.z_offset;
-                float accelx = (acceleration[0]/ accel_cal_const) - accel_offset.x_offset;
-                float accely = (acceleration[1]/ accel_cal_const) - accel_offset.y_offset;
-                float accelz = (acceleration[2]/ accel_cal_const);
-                float magx = mag[0] * mag_cal_const;
-                float magy = mag[1] * mag_cal_const;
-                float magz = mag[2] * mag_cal_const;
-
-                const FusionVector gyroscope = {gyrox, gyroy, gyroz}; // replace this with actual gyroscope data in degrees/s
-                const FusionVector accelerometer = {accelx, accely, accelz}; // replace this with actual accelerometer data in g
-
-                FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer, SAMPLE_PERIOD);
-
-                const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
-
+                imu_data = lsm9ds1.getData();
+            
 
                 tx.can_id = SLAVE_ID + YAW_ID;  
                 memcpy(tx.data, &yaw, sizeof(float));
