@@ -6,7 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-#include "SensorFusion/LSM9DS1Headers.h"
+#include "LSM9DS1Headers.h"
 
 
 #define PI 3.14159
