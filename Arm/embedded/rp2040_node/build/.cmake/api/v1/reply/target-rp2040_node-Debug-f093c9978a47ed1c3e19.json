@@ -129,7 +129,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " -fexceptions -Og -g"
+					"fragment" : "-mcpu=cortex-m0plus -mthumb -fexceptions -Og -g"
 				},
 				{
 					"backtrace" : 2,
@@ -1352,7 +1352,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-fexceptions -Og -g",
+				"fragment" : "-mcpu=cortex-m0plus -mthumb -fexceptions -Og -g",
 				"role" : "flags"
 			},
 			{

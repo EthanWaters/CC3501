@@ -1,17 +1,10 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "mcp2515/mcp2515.h"
+#include "mcp2515.h"
 #include <time.h>
 #include <chrono>
-#include "FusionArhs.h"
-#include "FusionAxes.h"
-#include "FusionCalibration.h"
-#include "FusionCompass.h"
-#include "FusionConvention.h"
-#include "FusionOffset.h"
-#include "FusionMath.h"
 #include "pico/binary_info.h"
-#include "SensorFusion/LSM9DS1_driver.h"
+#include "LSM9DS1_driver.h"
 #include "math.h"
 
 // SPI 
@@ -51,6 +44,9 @@ int main() {
     lsm9ds1.initialise_I2C(); // Set up I2C
     lsm9ds1.WHO_AM_I_CHECK_AG(); 
     lsm9ds1.WHO_AM_I_CHECK_M();   
+    lsm9ds1.CalibrateAG(); // Run sensor through calibration process //
+    sleep_ms(2000); // you've done well, have a rest //
+    lsm9ds1.CalibrateMag(); // Run sensor through calibration process //
     sleep_ms(2000); // you've done well, have a rest //
 
     // Set reset pin of CAN controller high to enable IC
@@ -64,36 +60,36 @@ int main() {
     mcp2515.setBitrate(CAN_1000KBPS, MCP_8MHZ);
     mcp2515.setNormalMode();    
 
-    // Gyro and accel calibration request
-    while(true) {
-        if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
-            if(rx.can_id == AG_CAL_REQUEST) {
-                lsm9ds1.CalibrateAG(); // Run sensor through calibration process //
-                sleep_ms(2000); // you've done well, have a rest //
-                break;
-            }
-        }
-    }
+    // // Gyro and accel calibration request
+    // while(true) {
+    //     if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
+    //         if(rx.can_id == AG_CAL_REQUEST) {
+    //             lsm9ds1.CalibrateAG(); // Run sensor through calibration process //
+    //             sleep_ms(2000); // you've done well, have a rest //
+    //             break;
+    //         }
+    //     }
+    // }
 
-    // Mag calibration request
-    while(true) {
-        if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
-            if(rx.can_id == (SLAVE_ID + MAG_CAL_REQUEST)) {
-                lsm9ds1.CalibrateMag(); // Run sensor through calibration process //
-                sleep_ms(2000); // you've done well, have a rest //
-                break;
-            }
-        }
-    }
+    // // Mag calibration request
+    // while(true) {
+    //     if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
+    //         if(rx.can_id == (SLAVE_ID + MAG_CAL_REQUEST)) {
+    //             lsm9ds1.CalibrateMag(); // Run sensor through calibration process //
+    //             sleep_ms(2000); // you've done well, have a rest //
+    //             break;
+    //         }
+    //     }
+    // }
 
-    // wait until arm ready to start
-    while(true) {
-        if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
-            if(rx.can_id == START_REQUEST) {
-                break;
-            }
-        }
-    }
+    // // wait until arm ready to start
+    // while(true) {
+    //     if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
+    //         if(rx.can_id == START_REQUEST) {
+    //             break;
+    //         }
+    //     }
+    // }
 
     
     //Arm active data collection loop
