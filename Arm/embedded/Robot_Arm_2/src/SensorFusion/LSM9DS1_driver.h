@@ -46,7 +46,8 @@ public:
 
    
     void resetlsm9ds1();
-    void CalibrateIMU();
+    void CalibrateAG();
+    void CalibrateMag();
     void configurelsm9ds1();
     void accelgyrocalibrateLSM9DS1(float * dest1, float * dest2);
     void selftestLSM9DS1();
