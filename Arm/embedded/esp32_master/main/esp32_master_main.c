@@ -37,7 +37,7 @@
 #define NO_OF_DATA_MSGS 3
 
 // Wifi definitions
-#define HOST_IP_ADDR "192.168.0.128"
+#define HOST_IP_ADDR "192.168.0.132"
 #define PORT 54321
 #define WIFI_SSID "elequent"
 #define WIFI_PASS "elequent137"
@@ -52,7 +52,7 @@ static int s_retry_num = 0;
 static const char *payload = "Message from ESP32";
 
 // CAN bus variables
-static const twai_timing_config_t t_config = TWAI_TIMING_CONFIG_500KBITS();
+static const twai_timing_config_t t_config = TWAI_TIMING_CONFIG_5KBITS();
 static const twai_filter_config_t f_config = TWAI_FILTER_CONFIG_ACCEPT_ALL();
 static const twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(CANTX, CANRX, TWAI_MODE_NORMAL);
 
@@ -86,41 +86,58 @@ static void udp_client_task(void *pvParameters)
     setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout);
 
     printf("Socket created, sending to %s:%d\n", HOST_IP_ADDR, PORT);
+        // rx_task_queue = xQueueCreate(1, sizeof(rx_task_action_t));
+        // tx_task_queue = xQueueCreate(1, sizeof(tx_task_action_t));
     twai_message_t rx_msg;
-
+    twai_message_t tx_msg;
     while (1) {
         
         // uint32_t data_msgs_rec = 0;
         // while (data_msgs_rec < NO_OF_DATA_MSGS) {
             printf("BEFORE TWAI");
-            if (twai_receive(&rx_msg, pdMS_TO_TICKS(10000)) == ESP_OK) {
-                printf("TWAI IS OKAY");
-                if (rx_msg.identifier == REQUEST_SLAVE1) {
 
-                    uint8_t* rec_data[3];
-                    for (int i = 0; i < rx_msg.data_length_code; i++) {
-                        rec_data[i] = rx_msg.data[i];
-                        printf("%02X", rx_msg.data[i]);
-                    }
-                    printf("\n");
-                    for (int i = 0; i < rx_msg.data_length_code; i++) {
-                        printf("%c", rx_msg.data[i]);
-                    }
-                    printf("\n");
-                }
+         
+            tx_msg.identifier = REQUEST_SLAVE1;
+            tx_msg.data_length_code = 4;
+            tx_msg.data[0] = 'H';
+            tx_msg.data[1] = 'E';
+            tx_msg.data[2] = 'L';
+            tx_msg.data[3] = 'L';
+
+            //Queue message for transmission
+            if (twai_transmit(&tx_msg, pdMS_TO_TICKS(1000)) == ESP_OK) {
+                printf("Message queued for transmission\n");
+            } else {
+                printf("Failed to queue message for transmission\n");
             }
+            // if (twai_receive(&rx_msg, pdMS_TO_TICKS(10000)) == ESP_OK) {
+            //     printf("TWAI IS OKAY");
+            //     if (rx_msg.identifier == REQUEST_SLAVE1) {
+
+            //         uint8_t* rec_data[3];
+            //         for (int i = 0; i < rx_msg.data_length_code; i++) {
+            //             rec_data[i] = rx_msg.data[i];
+            //             printf("%02X", rx_msg.data[i]);
+            //         }
+            //         printf("\n");
+            //         for (int i = 0; i < rx_msg.data_length_code; i++) {
+            //             printf("%c", rx_msg.data[i]);
+            //         }
+            //         printf("\n");
+            //     }
+            // }
         // }
-        uint32_t alerts_triggered;
-        twai_read_alerts(&alerts_triggered, portMAX_DELAY);
+            printf("DId I make it here ??? \n");
+            
 
-        int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-        if (err < 0) {
-            printf("Error occurred during sending err:%i\n", err);
-            break;
-        }
-        printf("Message sent\n");
+            int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+            if (err < 0) {
+                printf("Error occurred during sending err:%i\n", err);
+                break;
+            }
+            printf("Message sent\n");
 
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
 
     if (sock != -1) {
@@ -215,7 +232,7 @@ void app_main(void)
     ESP_ERROR_CHECK(ret);
     printf("Connecting wifi...");
     wifi_init_sta();
-    
+
     //Install TWAI driver
     if (twai_driver_install(&g_config, &t_config, &f_config) == ESP_OK) {
         printf("Driver installed\n");
@@ -232,9 +249,100 @@ void app_main(void)
         return;
     }
 
+	if (twai_reconfigure_alerts((TWAI_ALERT_BUS_OFF | TWAI_ALERT_BUS_RECOVERED | TWAI_ALERT_TX_FAILED), NULL) != ESP_OK)
+	{
+		printf("CAN ERROR - Failed to reconfigure alerts\n");
+	}
 
     // begin socket communication    
-    xTaskCreate(udp_client_task, "udp_client", 4096, NULL, 5, NULL);
+    // xTaskCreate(udp_client_task, "udp_client", 4096, NULL, 5, NULL);
 
+    int addr_family = 0;
+    int ip_protocol = 0;
+    printf("Free heap size: %lu", esp_get_free_heap_size());
     
+
+    struct sockaddr_in dest_addr;
+    dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
+    dest_addr.sin_family = AF_INET;
+    dest_addr.sin_port = htons(PORT);
+    addr_family = AF_INET;
+    ip_protocol = IPPROTO_IP;
+
+
+    int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
+    printf("Socket:%i\n", sock);
+    if (sock < 0) {
+        printf("Error");
+    }
+
+    // Set timeout
+    struct timeval timeout;
+    timeout.tv_sec = 10;
+    timeout.tv_usec = 0;
+    setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout);
+
+    printf("Socket created, sending to %s:%d\n", HOST_IP_ADDR, PORT);
+    // rx_task_queue = xQueueCreate(1, sizeof(rx_task_action_t));
+    // tx_task_queue = xQueueCreate(1, sizeof(tx_task_action_t));
+    twai_message_t rx_msg;
+    twai_message_t tx_msg;
+    while (1) {
+        
+        // uint32_t data_msgs_rec = 0;
+        // while (data_msgs_rec < NO_OF_DATA_MSGS) {
+            printf("BEFORE TWAI");
+
+         
+            tx_msg.identifier = REQUEST_SLAVE1;
+            tx_msg.data_length_code = 4;
+            tx_msg.data[0] = 'H';
+            tx_msg.data[1] = 'E';
+            tx_msg.data[2] = 'L';
+            tx_msg.data[3] = 'L';
+
+            //Queue message for transmission
+            if (twai_transmit(&tx_msg, pdMS_TO_TICKS(1000)) == ESP_OK) {
+                printf("Message queued for transmission\n");
+            } else {
+                printf("Failed to queue message for transmission\n");
+            }
+            // if (twai_receive(&rx_msg, pdMS_TO_TICKS(10000)) == ESP_OK) {
+            //     printf("TWAI IS OKAY");
+            //     if (rx_msg.identifier == REQUEST_SLAVE1) {
+
+            //         uint8_t* rec_data[3];
+            //         for (int i = 0; i < rx_msg.data_length_code; i++) {
+            //             rec_data[i] = rx_msg.data[i];
+            //             printf("%02X", rx_msg.data[i]);
+            //         }
+            //         printf("\n");
+            //         for (int i = 0; i < rx_msg.data_length_code; i++) {
+            //             printf("%c", rx_msg.data[i]);
+            //         }
+            //         printf("\n");
+            //     }
+            // }
+        // }
+            printf("DId I make it here ??? \n");
+            
+
+            int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+            if (err < 0) {
+                printf("Error occurred during sending err:%i\n", err);
+                break;
+            }
+            printf("Message sent\n");
+
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
+    }
+
+    if (sock != -1) {
+        printf("Shutting down socket and restarting...\n");
+        shutdown(sock, 0);
+        close(sock);
+    }
+
+
+    printf("AT END");
 }
