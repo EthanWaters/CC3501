@@ -1,10 +1,10 @@
 dependencies:
   espressif/qrcode:
-    component_hash: e07c05f9129250d79c62957c02e2f67d3485e917e6953cbc6637324b3a47ea7f
+    component_hash: c7b5970795ae7a647e40ed8c8576a947903c0e68ba86cd59cc772d346ec06238
     source:
       service_url: https://api.components.espressif.com/
       type: service
-    version: 0.1.0
+    version: 0.1.0~1
   idf:
     component_hash: null
     source:

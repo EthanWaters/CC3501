@@ -88,15 +88,17 @@ else()
 
    
     include_directories(${ProjectDir}/drivers/mcp2515/)
-    
+    include_directories(${ProjectDir}/drivers/LSM9DS1_driver)
     add_executable(rp2040_node
         src/rp2040_node.cpp
         ${ProjectDir}/drivers/mcp2515/mcp2515.cpp   
+        ${ProjectDir}/drivers/LSM9DS1_driver/LSM9DS1_driver.cpp  
     )
     target_sources(rp2040_node 
         PUBLIC
         src/rp2040_node.cpp
         ${ProjectDir}/drivers/mcp2515/mcp2515.cpp 
+        ${ProjectDir}/drivers/LSM9DS1_driver/LSM9DS1_driver.cpp  
         tests/mocks/pico/stdlib.cpp
         tests/mocks/pico/time.cpp
         tests/mocks/hardware/gpio.cpp
