@@ -415,7 +415,7 @@ Disassembly of section .text:
 100003ce:	4823      	ldr	r0, [pc, #140]	; (1000045c <main+0x128>)
 100003d0:	f006 fe82 	bl	100070d8 <__wrap_printf>
 100003d4:	9b24      	ldr	r3, [sp, #144]	; 0x90
-100003d6:	2b20      	cmp	r3, #32
+100003d6:	2b30      	cmp	r3, #48	; 0x30
 100003d8:	d1f2      	bne.n	100003c0 <main+0x8c>
 100003da:	ad14      	add	r5, sp, #80	; 0x50
 100003dc:	ac04      	add	r4, sp, #16
@@ -449,20 +449,20 @@ Disassembly of section .text:
 1000041a:	f006 fb1a 	bl	10006a52 <__wrap___aeabi_fmul>
 1000041e:	4d13      	ldr	r5, [pc, #76]	; (1000046c <main+0x138>)
 10000420:	6028      	str	r0, [r5, #0]
-10000422:	2321      	movs	r3, #33	; 0x21
+10000422:	2331      	movs	r3, #49	; 0x31
 10000424:	9320      	str	r3, [sp, #128]	; 0x80
 10000426:	9422      	str	r4, [sp, #136]	; 0x88
 10000428:	a920      	add	r1, sp, #128	; 0x80
 1000042a:	a811      	add	r0, sp, #68	; 0x44
 1000042c:	f000 fca4 	bl	10000d78 <_ZN7MCP251511sendMessageEPK9can_frame>
-10000430:	2322      	movs	r3, #34	; 0x22
+10000430:	2332      	movs	r3, #50	; 0x32
 10000432:	9320      	str	r3, [sp, #128]	; 0x80
 10000434:	683b      	ldr	r3, [r7, #0]
 10000436:	9322      	str	r3, [sp, #136]	; 0x88
 10000438:	a920      	add	r1, sp, #128	; 0x80
 1000043a:	a811      	add	r0, sp, #68	; 0x44
 1000043c:	f000 fc9c 	bl	10000d78 <_ZN7MCP251511sendMessageEPK9can_frame>
-10000440:	2323      	movs	r3, #35	; 0x23
+10000440:	2333      	movs	r3, #51	; 0x33
 10000442:	9320      	str	r3, [sp, #128]	; 0x80
 10000444:	682b      	ldr	r3, [r5, #0]
 10000446:	9322      	str	r3, [sp, #136]	; 0x88

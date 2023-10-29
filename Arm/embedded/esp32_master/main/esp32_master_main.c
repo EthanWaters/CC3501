@@ -53,7 +53,7 @@
 static EventGroupHandle_t s_wifi_event_group;
 static int s_retry_num = 0;
 static const char *payload = "Message from ESP32";
-float data_to_send[9]; 
+float data_to_send[12]; 
 
 
 // CAN bus variables
@@ -192,10 +192,11 @@ void request_slave_data(uint32_t Addr){
 
 void app_main(void)
 {
-    // struct segment chest = {0.0, 0.0, 0.0};
-    struct segment forearm = {20.0, 20.0, 20.0};
-    // struct segment bicep = {0.0, 0.0, 0.0};
-    struct segment hand = {5.0, 5.0, 5.0};
+    volatile struct segment chest = {5.0, 5.0, 5.0};
+    volatile struct segment forearm = {5.0, 5.0, 5.0};
+    volatile struct segment bicep = {5.0, 5.0, 5.0};
+    volatile struct segment hand = {5.0, 5.0, 5.0};
+
     //setup wifi connection 
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -233,7 +234,7 @@ void app_main(void)
     int addr_family = 0;
     int ip_protocol = 0;
     printf("Free heap size: %lu", esp_get_free_heap_size());
-    
+
     struct sockaddr_in dest_addr;
     dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
     dest_addr.sin_family = AF_INET;
@@ -257,16 +258,17 @@ void app_main(void)
 
     twai_message_t tx_msg;
     tx_msg.data_length_code = 0;
-
+    uint32_t alerts;
     while (1) {
         
-
         tx_msg.identifier = REQUEST_SLAVE1;
         if (twai_transmit(&tx_msg, pdMS_TO_TICKS(1000)) == ESP_OK) {
             printf("Message SUCCESS 1\n");
         } else {
             printf("Failed to queue message for transmission\n");
         }
+        // twai_read_alerts(&alerts, pdMS_TO_TICKS(500));
+        // printf("ERROR CODE: %lu\n", alerts);
         hand = recieve_slave_data(REQUEST_SLAVE1);
 
         tx_msg.identifier = REQUEST_SLAVE2;
@@ -275,19 +277,27 @@ void app_main(void)
         } else {
             printf("Failed to queue message for transmission\n");
         }
+        // twai_read_alerts(&alerts, pdMS_TO_TICKS(500));
+        // printf("ERROR CODE: %lu\n", alerts);
         forearm = recieve_slave_data(REQUEST_SLAVE2);
        
-        // request_slave_data(REQUEST_SLAVE2);
-        // forearm = recieve_slave_data(REQUEST_SLAVE2);
-       
-        // request_slave_data(REQUEST_SLAVE3);
-        // bicep = recieve_slave_data(REQUEST_SLAVE3);
-      
-        // request_slave_data(REQUEST_SLAVE4);
-        // chest = recieve_slave_data(REQUEST_SLAVE4); 
+        tx_msg.identifier = REQUEST_SLAVE3;
+        if (twai_transmit(&tx_msg, pdMS_TO_TICKS(1000)) == ESP_OK) {
+            printf("Message SUCCESS 3\n");
+        } else {
+            printf("Failed to queue message for transmission\n");
+        }
+        // twai_read_alerts(&alerts, pdMS_TO_TICKS(500));
+        // printf("ERROR CODE: %lu\n", alerts);
+        bicep = recieve_slave_data(REQUEST_SLAVE3);
 
-        // data_to_send = {hand.pitch, hand.roll, forearm.pitch, forearm.roll, bicep.pitch, bicep.roll}  
-        // string_to_send = array_to_string(data_to_send);
+        tx_msg.identifier = REQUEST_SLAVE4;
+        if (twai_transmit(&tx_msg, pdMS_TO_TICKS(1000)) == ESP_OK) {
+            printf("Message SUCCESS 4\n");
+        } else {
+            printf("Failed to queue message for transmission\n");
+        }
+        chest = recieve_slave_data(REQUEST_SLAVE4);
 
         data_to_send[0] = hand.pitch;
         data_to_send[1] = hand.roll;
@@ -295,7 +305,14 @@ void app_main(void)
         data_to_send[3] = forearm.pitch;
         data_to_send[4] = forearm.roll;
         data_to_send[5] = forearm.yaw;
-        printf("%f %f %f %f %f %f\n", hand.pitch, hand.roll, hand.yaw, forearm.pitch, forearm.roll, forearm.yaw);
+        data_to_send[6] = bicep.pitch;
+        data_to_send[7] = bicep.roll;
+        data_to_send[8] = bicep.yaw;
+        data_to_send[9] = chest.pitch;
+        data_to_send[10] = chest.roll;
+        data_to_send[11] = chest.yaw;       
+
+        printf("%f %f %f %f %f %f %f %f %f %f %f %f\n", forearm.yaw, forearm.pitch, forearm.roll, hand.yaw, hand.pitch, hand.roll, bicep.yaw, bicep.pitch, bicep.roll, chest.yaw, chest.pitch, chest.roll);
         int err = sendto(sock, data_to_send, sizeof(data_to_send), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
         if (err < 0) {
             printf("Error occurred during sending err:%i\n", err);
@@ -303,11 +320,11 @@ void app_main(void)
         }
     }
 
-    if (sock != -1) {
-        printf("Shutting down socket and restarting...\n");
-        shutdown(sock, 0);
-        close(sock);
-    }
+    // if (sock != -1) {
+    //     printf("Shutting down socket and restarting...\n");
+    //     shutdown(sock, 0);
+    //     close(sock);
+    // }
 
     printf("END");
 }

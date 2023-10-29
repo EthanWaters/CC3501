@@ -15,7 +15,7 @@
 #define PIN_SDA 6
 
 //CAN bus
-#define SLAVE_ID 0x020
+#define SLAVE_ID 0x030
 #define AG_CAL_REQUEST 0x500
 #define MAG_CAL_REQUEST 0x600
 #define START_REQUEST 0x700
@@ -108,7 +108,7 @@ int main() {
     while(true) {
         
         if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
-            printf("New frame from ID: %10x\n", rx.can_id);
+            printf("New frame from ID: %20x\n", rx.can_id);
             if(rx.can_id == SLAVE_ID) {
                                         
                 imu_data = lsm9ds1.getdata();
