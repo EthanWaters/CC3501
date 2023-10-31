@@ -5,6 +5,18 @@ from typing import Any
 import queue
 import time
 
+def butter_lowpass(cutoff, fs, order):
+    nyquist = 0.5*fs
+    normal_cutoff = cutoff / nyquist
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    return b, a 
+    
+def butter_lowpass_filter(data, cutoff=1, fs=3, order=4):
+    b, a = butter_lowpass(cutoff, fs, order)    
+    filtered_data = lfilter(b, a, angle)
+    return filtered_data
+    
+
 
 def server_init(received_data, event, HOST="127.0.0.1", PORT=54321, BUFF_SIZE=64):
     s = socket.socket(type=SOCK_DGRAM)

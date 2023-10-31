@@ -1,0 +1,2 @@
+python Server_testtcp.py
+pause

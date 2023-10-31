@@ -19,6 +19,7 @@
 #include "freertos/queue.h"
 #include "freertos/semphr.h"
 #include "esp_err.h"
+#include "esp_timer.h"
 #include "driver/twai.h"
 
 // CAN bus definitions
@@ -40,6 +41,7 @@
 #define HOST_IP_ADDR "192.168.0.128"
 #define PORT 54321
 // #define WIFI_SSID "EdwardheGrasping"
+// #define WIFI_SSID "Robot2"
 // #define WIFI_PASS "niryorobot"
 #define WIFI_SSID "elequent"
 #define WIFI_PASS "elequent137"
@@ -52,12 +54,11 @@
 // wifi variables
 static EventGroupHandle_t s_wifi_event_group;
 static int s_retry_num = 0;
-static const char *payload = "Message from ESP32";
 float data_to_send[12]; 
 
 
 // CAN bus variables
-static const twai_timing_config_t t_config = TWAI_TIMING_CONFIG_5KBITS();
+static const twai_timing_config_t t_config = TWAI_TIMING_CONFIG_10KBITS();
 static const twai_filter_config_t f_config = TWAI_FILTER_CONFIG_ACCEPT_ALL();
 static const twai_general_config_t g_config = TWAI_GENERAL_CONFIG_DEFAULT(CANTX, CANRX, TWAI_MODE_NORMAL);
 
@@ -146,7 +147,7 @@ struct segment recieve_slave_data(uint32_t Addr){
     int data_msgs_rec = 0;
     struct segment node = {0.0, 0.0, 0.0};
     while (data_msgs_rec < NO_OF_DATA_MSGS) {
-        if (twai_receive(&rx_msg, pdMS_TO_TICKS(100)) == ESP_OK) {
+        if (twai_receive(&rx_msg, pdMS_TO_TICKS(1000)) == ESP_OK) {
             if ((rx_msg.identifier - Addr) == YAW_ID) {
                 memcpy(&node.yaw, rx_msg.data, sizeof(float));
             } else if ((rx_msg.identifier - Addr) == ROLL_ID) {
@@ -189,7 +190,6 @@ void request_slave_data(uint32_t Addr){
     return;
 }
 
-
 void app_main(void)
 {
     volatile struct segment chest = {5.0, 5.0, 5.0};
@@ -228,8 +228,6 @@ void app_main(void)
 		printf("CAN ERROR - Failed to reconfigure alerts\n");
 	}
 
-    // begin socket communication    
-    // xTaskCreate(udp_client_task, "udp_client", 4096, NULL, 5, NULL);
 
     int addr_family = 0;
     int ip_protocol = 0;
@@ -241,7 +239,6 @@ void app_main(void)
     dest_addr.sin_port = htons(PORT);
     addr_family = AF_INET;
     ip_protocol = IPPROTO_IP;
-
 
     int sock = socket(addr_family, SOCK_DGRAM, ip_protocol);
     printf("Socket:%i\n", sock);
@@ -257,6 +254,7 @@ void app_main(void)
     printf("Socket created, sending to %s:%d\n", HOST_IP_ADDR, PORT);
 
     twai_message_t tx_msg;
+    uint64_t wait_duration_us = 10000;
     tx_msg.data_length_code = 0;
     uint32_t alerts;
     while (1) {
@@ -311,20 +309,22 @@ void app_main(void)
         data_to_send[9] = chest.pitch;
         data_to_send[10] = chest.roll;
         data_to_send[11] = chest.yaw;       
-
-        printf("%f %f %f %f %f %f %f %f %f %f %f %f\n", forearm.yaw, forearm.pitch, forearm.roll, hand.yaw, hand.pitch, hand.roll, bicep.yaw, bicep.pitch, bicep.roll, chest.yaw, chest.pitch, chest.roll);
+        
+        printf("%f %f %f %f %f %f %f %f %f %f %f %f\n", hand.yaw, hand.pitch, hand.roll, forearm.yaw, forearm.pitch, forearm.roll, bicep.yaw, bicep.pitch, bicep.roll, chest.yaw, chest.pitch, chest.roll);
+        //  printf("%f %f %f %f %f %f %f %f %f %f %f %f\n", hand.yaw, hand.pitch, hand.roll, forearm.yaw, forearm.pitch, forearm.roll, bicep.yaw, bicep.pitch, bicep.roll, chest.yaw, chest.pitch, chest.roll);       
         int err = sendto(sock, data_to_send, sizeof(data_to_send), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
         if (err < 0) {
             printf("Error occurred during sending err:%i\n", err);
             break;
         }
+
     }
 
-    // if (sock != -1) {
-    //     printf("Shutting down socket and restarting...\n");
-    //     shutdown(sock, 0);
-    //     close(sock);
-    // }
+    if (sock != -1) {
+        printf("Shutting down socket and restarting...\n");
+        shutdown(sock, 0);
+        close(sock);
+    }
 
     printf("END");
 }

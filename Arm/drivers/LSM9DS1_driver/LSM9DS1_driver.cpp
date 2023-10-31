@@ -95,14 +95,14 @@ enum Modr {  // set of allowable mag sample rates
 
 
 // Specify sensor full scale
-uint8_t Gscale = GFS_245DPS; // gyro full scale
-uint8_t Godr = GODR_238Hz;   // gyro data sample rate
+uint8_t Gscale = GFS_2000DPS; // gyro full scale
+uint8_t Godr = GODR_119Hz;   // gyro data sample rate
 uint8_t Gbw = GBW_med;       // gyro data bandwidth
-uint8_t Ascale = AFS_2G;     // accel full scale
-uint8_t Aodr = AODR_238Hz;   // accel data sample rate
+uint8_t Ascale = AFS_16G;     // accel full scale
+uint8_t Aodr = AODR_119Hz;   // accel data sample rate
 uint8_t Abw = ABW_50Hz;      // accel data bandwidth
-uint8_t Mscale = MFS_4G;     // mag full scale
-uint8_t Modr = MODR_10Hz;    // mag data sample rate
+uint8_t Mscale = MFS_16G;     // mag full scale
+uint8_t Modr = MODR_80Hz;    // mag data sample rate
 uint8_t Mmode = MMode_HighPerformance;  // magnetometer operation mode
 float aRes, gRes, mRes;      // scale resolutions per LSB for the sensors
   
@@ -274,6 +274,7 @@ void LSM9DS1Driver::accelgyrocalibrateLSM9DS1(float * dest1, float * dest2)
    // configure the accelerometer-specify bandwidth selection with Abw
    writeRegisters_AG(LSM9DS1XG_CTRL_REG6_XL, Aodr << 5 | Ascale << 3 | 0x04 |Abw);
    sleep_ms(200);
+
    // enable block data update, allow auto-increment during multiple byte read
    writeRegisters_AG(LSM9DS1XG_CTRL_REG8, 0x44);
   
@@ -808,9 +809,9 @@ uint8_t data;
     
     // Calculate the magnetometer values in milliGauss
     // Include factory calibration per data sheet and user environmental corrections
-    mx = (float)magCount[0]*mRes; // - magBias[0];  // get actual magnetometer value, this depends on scale being set
-    my = (float)magCount[1]*mRes; // - magBias[1];  
-    mz = (float)magCount[2]*mRes; // - magBias[2];   
+    mx = (float)magCount[0]*mRes - magBias[0];  // get actual magnetometer value, this depends on scale being set
+    my = (float)magCount[1]*mRes - magBias[1];  
+    mz = (float)magCount[2]*mRes - magBias[2];   
   
   
     uint64_t start_time;

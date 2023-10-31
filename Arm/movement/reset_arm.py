@@ -1,5 +1,5 @@
 from pyniryo import *
-from pynput import keyboard
+
 import threading
 import socket
 from socket import SOCK_DGRAM, SO_REUSEADDR
@@ -7,7 +7,7 @@ from typing import Any
 import queue
 import time
 
-WIFI_IP_ADDRESS = "10.10.10.10"
+WIFI_IP_ADDRESS = "192.168.0.177"
 
 
 robot = NiryoRobot(WIFI_IP_ADDRESS)

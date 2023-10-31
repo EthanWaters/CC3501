@@ -14,8 +14,9 @@
 #define PIN_SCK  23
 #define PIN_SDA 6
 
+
 //CAN bus
-#define SLAVE_ID 0x030
+#define SLAVE_ID 0x40
 #define AG_CAL_REQUEST 0x500
 #define MAG_CAL_REQUEST 0x600
 #define START_REQUEST 0x700
@@ -29,17 +30,12 @@
 #define RX_PIN 28
 #define SPI_CLOCK 1000000 //16MHz
 #define SCK_PIN 26
-
+#define NUM_SAMPLES 4
 
 // IMU 
 float PI = 3.14159;
 float rad_conv = (PI/180);
 float pitch_rad, yaw_rad, roll_rad;
-
-
-// CAN bus
-
-
 
 
 int main() {
@@ -69,40 +65,8 @@ int main() {
     MCP2515 mcp2515(spi1, CS_PIN, TX_PIN, RX_PIN, SCK_PIN, SPI_CLOCK);
     
     mcp2515.reset();
-    mcp2515.setBitrate(CAN_5KBPS, MCP_8MHZ);
+    mcp2515.setBitrate(CAN_10KBPS, MCP_8MHZ);
     mcp2515.setNormalMode();    
-
-    // // Gyro and accel calibration request
-    // while(true) {
-    //     if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
-    //         if(rx.can_id == AG_CAL_REQUEST) {
-    //             lsm9ds1.CalibrateAG(); // Run sensor through calibration process //
-    //             sleep_ms(2000); // you've done well, have a rest //
-    //             break;
-    //         }
-    //     }
-    // }
-
-    // // Mag calibration request
-    // while(true) {
-    //     if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
-    //         if(rx.can_id == (SLAVE_ID + MAG_CAL_REQUEST)) {
-    //             lsm9ds1.CalibrateMag(); // Run sensor through calibration process //
-    //             sleep_ms(2000); // you've done well, have a rest //
-    //             break;
-    //         }
-    //     }
-    // }
-
-    // // wait until arm ready to start
-    // while(true) {
-    //     if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
-    //         if(rx.can_id == START_REQUEST) {
-    //             break;
-    //         }
-    //     }
-    // }
-
     
     //Arm active data collection loop
     while(true) {
@@ -110,13 +74,13 @@ int main() {
         if(mcp2515.readMessage(&rx) == MCP2515::ERROR_OK) {
             printf("New frame from ID: %20x\n", rx.can_id);
             if(rx.can_id == SLAVE_ID) {
-                                        
+
                 imu_data = lsm9ds1.getdata();
                 
                 pitch_rad = imu_data.pitch*rad_conv;
                 yaw_rad = imu_data.yaw*rad_conv;
                 roll_rad = imu_data.roll*rad_conv;
-
+            
                 tx.can_id = SLAVE_ID + YAW_ID;  
                 memcpy(tx.data, &yaw_rad, sizeof(float));
                 mcp2515.sendMessage(&tx);  
